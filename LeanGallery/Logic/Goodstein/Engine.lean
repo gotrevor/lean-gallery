@@ -3,7 +3,7 @@ Copyright (c) 2026 Trevor Morris. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Trevor Morris
 -/
-import LeanGallery.Logic.Goodstein.Defs
+import LeanGallery.Logic.Goodstein.Basic
 import Mathlib.SetTheory.Ordinal.Exponential
 import Mathlib.Algebra.Order.SuccPred
 import Mathlib.Tactic.Ring
@@ -12,8 +12,8 @@ import Mathlib.Tactic.Ring
 # Goodstein — proof engine (ordinal descent)
 
 This file is the proof machinery behind `goodstein_terminates`. It is NOT part of
-the audit surface (that is `Defs`/`Statement`/`Anchors`); it just has to be
-correct, which the kernel checks.
+the audit surface (that is `Basic`/`Statement`); it just has to be correct, which
+the kernel checks.
 
 ## Strategy
 Interpret `n`, read in hereditary base `b`, as an ordinal `toOrdinal b n` by
@@ -37,6 +37,10 @@ namespace LeanGallery.Logic.Goodstein
 
 open Ordinal
 
+-- The `if h : n = 0` binder is the `n ≠ 0` hypothesis consumed in `decreasing_by`,
+-- not in the function body; the `unusedVariables` linter does not credit that use for
+-- a `noncomputable` def (the computable `bump` with the identical pattern is fine).
+set_option linter.unusedVariables false in
 /-- **Ordinal interpretation.** Read `n` in hereditary base `b`, replacing `b` by
 `ω`. Same top-power peeling as `bump`: with `e = log b n`, `c = n / b^e`,
 `r = n % b^e`, `toOrdinal b n = ω^(toOrdinal b e) * c + toOrdinal b r`. -/
@@ -202,7 +206,7 @@ theorem bump_mono_and_bound (b : ℕ) (hb : 2 ≤ b) (n : ℕ) :
         bump b r < (b + 1) ^ bump b e' := by
       intro r e' he'n hre' hrn
       rcases eq_or_ne r 0 with rfl | hr0
-      · simpa using Nat.pow_pos (show 0 < b + 1 by omega)
+      · simp
       · have hlogr : Nat.log b r < e' := (Nat.log_lt_iff_lt_pow hb1 hr0).2 hre'
         have h1 : bump b (Nat.log b r) < bump b e' := (ih e' he'n).1 _ hlogr
         have h2 : bump b r < (b + 1) ^ (bump b (Nat.log b r) + 1) := (ih r hrn).2 hr0
@@ -292,7 +296,7 @@ The base-`(b+1)` analog of the leading bound. -/
 lemma bump_lt_pow (b : ℕ) (hb : 2 ≤ b) {r e : ℕ} (h : r < b ^ e) :
     bump b r < (b + 1) ^ bump b e := by
   rcases eq_or_ne r 0 with rfl | hr0
-  · simpa using Nat.pow_pos (show 0 < b + 1 by omega)
+  · simp
   · have hb1 : 1 < b := by omega
     have hlogr : Nat.log b r < e := (Nat.log_lt_iff_lt_pow hb1 hr0).2 h
     have hmono := (bump_mono_and_bound b hb e).1 (Nat.log b r) hlogr

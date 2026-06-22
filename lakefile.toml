@@ -8,6 +8,9 @@ defaultTargets = ["LeanGallery"]
 # designed to work in downstream projects). `weak.` = applied at build time, not baked into oleans.
 [leanOptions]
 weak.linter.style.header = true
+# Warnings-as-errors (standing preference: warnings "are there for a reason"). `lake build`
+# — and so the pre-commit gate + CI — fails on ANY warning, keeping finished results clean.
+weak.warningAsError = true
 
 # Mathlib pinned as a DIRECT require at v4.31.0 (matches the ~/.lake-base/4.31.0 universe
 # store, so `lake-base link` CoW-clones the prebuilt oleans in — no 40-min cold build).

@@ -3,18 +3,17 @@ Copyright (c) 2026 Trevor Morris. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Trevor Morris
 -/
-import LeanGallery.Logic.Goodstein.Defs
-import LeanGallery.Logic.Goodstein.Anchors
+import LeanGallery.Logic.Goodstein.Basic
 import LeanGallery.Logic.Goodstein.Engine
 
 /-!
 # Goodstein's theorem: every Goodstein sequence terminates — Goodstein (1944)
 
-**Designated audit surface** (with `Defs.lean` and `Anchors.lean`). The proof
-engine lives in sibling files; this statement delegates.
+**Designated audit surface** (with `Basic.lean`). The proof engine lives in sibling
+files; this statement delegates.
 
 ## What this says
-For every starting value `m`, the Goodstein sequence seeded at `m` (see `Defs.lean`)
+For every starting value `m`, the Goodstein sequence seeded at `m` (see `Basic.lean`)
 eventually reaches `0`. Despite the early astronomical growth (the `m = 4` sequence
 peaks around `3·2^402653211` before descending), it always terminates.
 

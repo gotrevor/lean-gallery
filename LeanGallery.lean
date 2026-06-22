@@ -1,7 +1,6 @@
-import LeanGallery.Logic.Goodstein.Statement
-import LeanGallery.Logic.Goodstein.Defs
-import LeanGallery.Logic.Goodstein.Anchors
+import LeanGallery.Logic.Goodstein.Basic
 import LeanGallery.Logic.Goodstein.Engine
+import LeanGallery.Logic.Goodstein.Statement
 
 /-!
 # LeanGallery
