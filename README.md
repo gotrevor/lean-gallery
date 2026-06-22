@@ -10,7 +10,22 @@ happens in private repositories; only finished, axiom-clean results are promoted
 
 ## Contents
 
-_First result lands in the next commit._
+| Area | Result | Status |
+|------|--------|--------|
+| `Logic/Goodstein` | **Goodstein 1944** — every Goodstein sequence terminates (`∀ m, ∃ N, goodsteinSeq m N = 0`). Faithful hereditary-base bump, interpreted into ordinals below ε₀; strict ordinal descent + well-foundedness of `<` on `Ordinal`. | ✅ axiom-clean |
+
+## What to audit (faithfulness)
+
+The trust surface for each result is small and called out explicitly. For Goodstein:
+
+- `LeanGallery/Logic/Goodstein/Defs.lean` — the **definition** of a Goodstein sequence (the
+  hereditary-base bump + subtract-one process). Read this against Goodstein 1944.
+- `LeanGallery/Logic/Goodstein/Statement.lean` — the **headline** `goodstein_terminates`.
+- `LeanGallery/Logic/Goodstein/Anchors.lean` — `native_decide` anti-vacuity anchors: the
+  definition *computes* the genuine trajectories (`m = 0..3`), so a vacuous definition can't pass.
+
+`Engine.lean` is the proof; the definition + statement are the audit surface. CI re-checks
+`#print axioms` so the published claim stays `[propext, Classical.choice, Quot.sound]`.
 
 ## Build
 

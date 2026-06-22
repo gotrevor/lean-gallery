@@ -18,3 +18,11 @@ jobs:
       - uses: actions/checkout@v4
       # elan + `lake exe cache get` (prebuilt Mathlib oleans) + `lake build`.
       - uses: leanprover/lean-action@v1
+      # Prove the published claim: no `sorry`, no cheat axioms.
+      - name: Axiom-clean gate
+        run: |
+          printf 'import LeanGallery.Logic.Goodstein.Statement\n#print axioms LeanGallery.Logic.Goodstein.goodstein_terminates\n' > axcheck.lean
+          lake env lean axcheck.lean 2>&1 | tee ax.out
+          grep -q "depends on axioms: \[propext, Classical.choice, Quot.sound\]" ax.out \
+            || { echo "::error::goodstein_terminates has unexpected axioms (sorry or cheat axiom)"; exit 1; }
+          rm -f axcheck.lean ax.out

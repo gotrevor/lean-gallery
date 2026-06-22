@@ -1,3 +1,5 @@
+import LeanGallery.Logic.Goodstein.Statement
+
 /-!
 # LeanGallery
 
@@ -9,5 +11,6 @@ Publish-only: every result here compiles cleanly with no `sorry` (CI-enforced). 
 work-in-progress development lives in private repositories; only finished, axiom-clean
 results are promoted in here.
 
-Results are imported below, one module per area.
+## Results
+- `Logic/Goodstein` — Goodstein's theorem: every Goodstein sequence terminates (Goodstein 1944).
 -/
