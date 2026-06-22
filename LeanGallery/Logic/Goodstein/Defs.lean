@@ -1,4 +1,11 @@
 /-
+Copyright (c) 2026 Trevor Morris. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Trevor Morris
+-/
+import Mathlib.Data.Nat.Log
+
+/-!
 # Goodstein sequences — definitions (audit surface, part 1 of 2)
 
 This file fixes the **faithful definition** of a Goodstein sequence. Together with
@@ -27,7 +34,6 @@ a fixed point). So `G 0` is read in base 2, the first bump is `2 ↦ 3`, the nex
 
 `goodsteinSeq m k` is `G k`. The base at step `k` is `base k = k + 2`.
 -/
-import Mathlib.Data.Nat.Log
 
 namespace LeanGallery.Logic.Goodstein
 

@@ -1,6 +1,14 @@
 name = "LeanGallery"
 defaultTargets = ["LeanGallery"]
 
+# Enforce Mathlib's per-file copyright/header style locally and in CI, so finished results
+# are drop-in ready for upstreaming into Mathlib. `linter.style.header` is a real in-build
+# linter (runs during `lake build`, incl. the pre-commit gate) that fires on any file
+# reachable from the library root `LeanGallery.lean` (Mathlib's `isInLibraryRoot` heuristic,
+# designed to work in downstream projects). `weak.` = applied at build time, not baked into oleans.
+[leanOptions]
+weak.linter.style.header = true
+
 # Mathlib pinned as a DIRECT require at v4.31.0 (matches the ~/.lake-base/4.31.0 universe
 # store, so `lake-base link` CoW-clones the prebuilt oleans in — no 40-min cold build).
 [[require]]

@@ -1,4 +1,13 @@
 /-
+Copyright (c) 2026 Trevor Morris. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Trevor Morris
+-/
+import LeanGallery.Logic.Goodstein.Defs
+import LeanGallery.Logic.Goodstein.Anchors
+import LeanGallery.Logic.Goodstein.Engine
+
+/-!
 # Goodstein's theorem: every Goodstein sequence terminates — Goodstein (1944)
 
 **Designated audit surface** (with `Defs.lean` and `Anchors.lean`). The proof
@@ -25,9 +34,6 @@ Arithmetic cannot prove this theorem (Kirby & Paris 1982, via `Goodstein ⟹ Con
 + Gödel II) — is a *metamathematical* statement about PA and is explicitly OUT OF
 SCOPE. See `README.md`.
 -/
-import LeanGallery.Logic.Goodstein.Defs
-import LeanGallery.Logic.Goodstein.Anchors
-import LeanGallery.Logic.Goodstein.Engine
 
 namespace LeanGallery.Logic.Goodstein
 

@@ -1,4 +1,14 @@
 /-
+Copyright (c) 2026 Trevor Morris. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Trevor Morris
+-/
+import LeanGallery.Logic.Goodstein.Defs
+import Mathlib.SetTheory.Ordinal.Exponential
+import Mathlib.Algebra.Order.SuccPred
+import Mathlib.Tactic.Ring
+
+/-!
 # Goodstein — proof engine (ordinal descent)
 
 This file is the proof machinery behind `goodstein_terminates`. It is NOT part of
@@ -22,10 +32,6 @@ Then `a k := toOrdinal (k+2) (G k)` is strictly decreasing while `G k ≠ 0`
 Both monotonicity and the leading-coefficient bound are proved together by one
 strong induction; `bump` gets the parallel pair over `ℕ`.
 -/
-import LeanGallery.Logic.Goodstein.Defs
-import Mathlib.SetTheory.Ordinal.Exponential
-import Mathlib.Algebra.Order.SuccPred
-import Mathlib.Tactic.Ring
 
 namespace LeanGallery.Logic.Goodstein
 
