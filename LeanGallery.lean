@@ -1,6 +1,9 @@
 import LeanGallery.Logic.Goodstein.Basic
 import LeanGallery.Logic.Goodstein.Engine
 import LeanGallery.Logic.Goodstein.Statement
+import LeanGallery.Logic.Hydra.Basic
+import LeanGallery.Logic.Hydra.Engine
+import LeanGallery.Logic.Hydra.Statement
 
 /-!
 # LeanGallery
@@ -15,4 +18,5 @@ results are promoted in here.
 
 ## Results
 - `Logic/Goodstein` — Goodstein's theorem: every Goodstein sequence terminates (Goodstein 1944).
+- `Logic/Hydra` — Kirby–Paris hydra: Hercules always wins / every hydra dies (termination, ε₀).
 -/
