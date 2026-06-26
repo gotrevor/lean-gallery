@@ -5,10 +5,6 @@ Authors: Trevor Morris
 -/
 import Mathlib.Data.Multiset.Basic
 
--- The headline type is `LeanGallery.Logic.Hydra.Hydra`; the trailing-`Hydra` dup is
--- intentional (mirrors `Mathlib/Logic/Hydra.lean`'s placement).
-set_option linter.dupNamespace false
-
 /-!
 # The Kirby–Paris hydra
 
@@ -79,6 +75,10 @@ metamathematical statement and is out of scope here.
 * `Mathlib/Logic/Hydra.lean` (`Relation.CutExpand`, J. Xu) — the abstract single-level
   multiset hydra, whose `TODO` (formalize the Kirby–Paris hydra) this entry answers.
 -/
+
+-- The headline type is `LeanGallery.Logic.Hydra.Hydra`; the trailing-`Hydra` dup is
+-- intentional (mirrors `Mathlib/Logic/Hydra.lean`'s placement).
+set_option linter.dupNamespace false
 
 namespace LeanGallery.Logic.Hydra
 
