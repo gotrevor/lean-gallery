@@ -19,6 +19,7 @@ promoted in here.
 | `Combinatorics/Erdos1213` | **Erdős #1213 / Hegyvári Thm 3** (Hegyvári 1986) — a strictly increasing sequence with consecutive gaps `≤ K` whose consecutive-block sums are all distinct has last term `< (a₁+K/2)·e^(K+1) + K·e^(2K+2)` (`erdos_1213`); hence `f(a,K)` is finite (`erdos_1213_f_finite`). First known formalization. | ✅ axiom-clean |
 | `NumberTheory/Erdos1050` | **Erdős #1050** (Borwein 1991/92) — the series `∑ 1/(2ⁿ−3)` is irrational (`erdos_1050_irrational`), via Borwein's irrationality criterion for `∑ 1/(qⁿ+r)` specialized to `q=2, r=−3`. The general engine also proves **Borwein's Theorem 1** fully axiom-free — `∑ 1/(qⁿ+c)` is irrational for any integer base of magnitude `≥ 2` and any nonzero rational `c` (`borwein_thm1_abs`), discharging the `borwein_approximants` axiom. | ✅ axiom-clean |
 | `Combinatorics/Erdos880` | **Erdős #880** (Hegyvári–Hennecart–Plagne 2007) — for an additive basis `A` of order `k`, are the gaps of its restricted-sum set (sums of `≤ k` distinct elements) bounded? **Yes for `k = 2`** (`erdos_880_order_two`, gaps eventually `≤ 2`); **no for `k ≥ 3`** (`erdos_880`: an explicit order-`h` basis with arbitrarily long gaps). Includes the faithful `Δ = limsup`-gap restatements and the HHP07 Theorem 3/4/8/9 companions; an in-library `AxiomGuard` build-checks `#print axioms` for ~25 theorems. | ✅ axiom-clean |
+| `NumberTheory/Erdos482` | **Erdős #482 / Graham–Pollak** (Stoll) — the recurrence `u(0)=1, u(n+1)=⌊√2·(uₙ+½)⌋` reads off the binary expansion of `√2`: the difference `u(2n+1) − 2·u(2n−1)` is the `n`-th binary digit of `√2` (`graham_pollak`). Resolved in **full generality** (`erdos482_resolution`): for every real `w > 0` and base `g ≥ 2`, an explicit Graham–Pollak-type recurrence reads the base-`g` digits of `w`. Includes Stoll's `759250125·√2` showcase constant (`cor33_unconditional`) and the St06 digit-frontier family. | ✅ axiom-clean |
 
 ## What to audit (faithfulness)
 
@@ -72,6 +73,14 @@ For Erdős #880:
   `IsBasisOfOrder`, `UnboundedGaps`, `BoundedGapsBy`); `AxiomGuard.lean` build-checks the axiom list of
   ~25 theorems. Read against Hegyvári–Hennecart–Plagne 2007.
 
+For Erdős #482:
+
+- `LeanGallery/NumberTheory/Erdos482/Statement.lean` — the single trust surface: every headline as a
+  documented `alias` (a citation + plain-English claim sitting next to the machine-checked re-export).
+  The primary headlines are `graham_pollak` (the Graham–Pollak difference is the `n`-th binary digit of
+  `√2`), `erdos482_resolution` (the full-generality resolution, every `w > 0` and base `g ≥ 2`), and
+  `cor33_unconditional` (Stoll's `759250125·√2` constant). Read against Stoll, arXiv:0902.4168.
+
 `Engine.lean` (or, for #1213, the `Counting`/`Analytic`/`Main` proof files) is the proof; `Basic.lean`
 + `Statement.lean` are the audit surface. CI re-checks `#print axioms` so each published claim stays
 `[propext, Classical.choice, Quot.sound]`.
@@ -102,6 +111,8 @@ Toolchain and Mathlib pin live in `lean-toolchain` / `lake-manifest.json` (Lean 
 - N. Hegyvári, F. Hennecart, A. Plagne, *Answer to a question by Burr and Erdős on restricted addition,
   and related results*, Combin. Probab. Comput. **16** (2007), 747–756. Erdős problem #880,
   <https://www.erdosproblems.com/880>.
+- The Graham–Pollak `√2`-digit recurrence and its general-base resolution: T. Stoll, arXiv:0902.4168.
+  Erdős problem #482, <https://www.erdosproblems.com/482>.
 
 ## License
 
