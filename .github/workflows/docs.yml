@@ -1,0 +1,92 @@
+# API documentation (doc-gen4), built from the nested `docbuild/` sub-project.
+#
+# DROP-IN: this file is repo-agnostic. To adopt it, just add a `docbuild/` sub-project
+# (doc-gen4's currently-recommended setup) and commit this workflow unchanged. The parent
+# library name is auto-detected from `docbuild/lakefile.toml`; `main`/`master` are both
+# handled. (Multi-library repos: edit the single `lake build` line below.)
+#
+# Deliberately a SEPARATE, non-required workflow from the build/test CI (which stays the
+# merge gate). A docs break is an honest red X that never blocks a merge.
+#
+# Build cadence — docs build ONLY off the default branch, release/rc tags, or on-demand;
+# never on an arbitrary PR:
+#   • push to main/master   → build + deploy to Pages (the source of truth)
+#   • v* tag (incl. -rcN)   → build only; rc tags mirror the Lean toolchain, i.e. exactly
+#                             when doc-gen4 tends to break across a bump
+#   • PR touching a build-
+#     sensitive file        → build only (auto shift-left: toolchain / lakefile / manifest
+#                             / docbuild are the doc-gen4 breakers)
+#   • on-demand PR          → add the `force-docs` label, or push a `*-force-docs` branch
+#   • ordinary PR           → builds NOTHING (0 doc-CI minutes)
+name: docs
+
+on:
+  push:
+    branches: [main, master]
+    tags: ['v*']
+  pull_request:
+    types: [opened, synchronize, reopened, labeled]
+
+# Serialize Pages deploys so concurrent runs can't hit the "in progress deployment" race.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+permissions:
+  contents: write       # peaceiris pushes the built site to the gh-pages branch
+  pull-requests: read   # paths-filter reads the PR's changed-file list
+
+jobs:
+  # Cheap (~seconds) gate: did this change touch a doc-gen4-breaking file?
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      sensitive: ${{ steps.filter.outputs.sensitive }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            sensitive:
+              - 'lean-toolchain'
+              - 'lakefile.*'
+              - 'lake-manifest.json'
+              - 'docbuild/**'
+
+  docs:
+    needs: changes
+    if: >
+      github.event_name == 'push'
+      || needs.changes.outputs.sensitive == 'true'
+      || contains(github.event.pull_request.labels.*.name, 'force-docs')
+      || endsWith(github.head_ref, '-force-docs')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # elan only; we drive the build ourselves inside docbuild/ (the parent lib is
+      # compiled as a dependency of the `:docs` facet, using cached Mathlib oleans).
+      - uses: leanprover/lean-action@v1
+        with:
+          build: false
+      - name: Build API docs (docbuild sub-project)
+        run: |
+          cd docbuild
+          # Auto-detect the parent library: the `[[require]]` whose `path` points at "../".
+          LIB=$(awk '
+            /^[[:space:]]*\[\[require\]\]/        { name="" }
+            /^[[:space:]]*name[[:space:]]*=/      { l=$0; sub(/.*=[[:space:]]*"/,"",l); sub(/".*/,"",l); name=l }
+            /^[[:space:]]*path[[:space:]]*=[[:space:]]*"\.\.\/?"/ { print name; exit }
+          ' lakefile.toml)
+          if [ -z "$LIB" ]; then echo "::error::could not detect parent library from docbuild/lakefile.toml"; exit 1; fi
+          echo "Building docs for library: $LIB"
+          lake exe cache get || true
+          lake build "$LIB:docs"
+      - name: Deploy to GitHub Pages
+        if: >
+          github.event_name == 'push'
+          && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: docbuild/.lake/build/doc
