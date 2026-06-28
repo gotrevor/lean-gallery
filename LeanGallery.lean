@@ -9,6 +9,7 @@ import LeanGallery.NumberTheory.Erdos403.Engine
 import LeanGallery.NumberTheory.Erdos403.Statement
 import LeanGallery.Combinatorics.Erdos1213
 import LeanGallery.NumberTheory.Erdos1050
+import LeanGallery.Combinatorics.Erdos880
 
 /-!
 # LeanGallery
@@ -29,4 +30,6 @@ results are promoted in here.
 - `Combinatorics/Erdos1213` — Erdős #1213 / Hegyvári Thm 3: a bounded-gap increasing sequence with
   all consecutive-block sums distinct has bounded last term, so `f(a,K)` is finite (Hegyvári 1986).
 - `NumberTheory/Erdos1050` — Erdős #1050: the series `∑ 1/(2ⁿ−3)` is irrational (Borwein 1991/92).
+- `Combinatorics/Erdos880` — Erdős #880: restricted-sumset gaps are bounded for basis-order `k=2` but
+  unbounded for `k ≥ 3` (Hegyvári–Hennecart–Plagne 2007).
 -/
