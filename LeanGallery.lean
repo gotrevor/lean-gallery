@@ -8,6 +8,7 @@ import LeanGallery.NumberTheory.Erdos403.Basic
 import LeanGallery.NumberTheory.Erdos403.Engine
 import LeanGallery.NumberTheory.Erdos403.Statement
 import LeanGallery.Combinatorics.Erdos1213
+import LeanGallery.NumberTheory.Erdos1050
 
 /-!
 # LeanGallery
@@ -27,4 +28,5 @@ results are promoted in here.
   factorials; the largest is `2⁷ = 2! + 3! + 5! = 128` (Frankl / Shen Lin 1976).
 - `Combinatorics/Erdos1213` — Erdős #1213 / Hegyvári Thm 3: a bounded-gap increasing sequence with
   all consecutive-block sums distinct has bounded last term, so `f(a,K)` is finite (Hegyvári 1986).
+- `NumberTheory/Erdos1050` — Erdős #1050: the series `∑ 1/(2ⁿ−3)` is irrational (Borwein 1991/92).
 -/

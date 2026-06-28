@@ -17,6 +17,7 @@ promoted in here.
 | `Logic/Hydra` | **Kirby–Paris 1982** — Hercules always wins: every hydra dies (`hydra_terminates` — every battle reaches `leaf`). Faithful chop-a-head-regrow-at-the-grandparent move on finite rooted trees; the ε₀ Kirby–Paris ordinal `♯ ωᵒ⁽ᶜ⁾`, realized as a recursive multiset (path) order on `Mathlib/Logic/Hydra.lean`'s `CutExpand`; strict descent + well-foundedness. | ✅ axiom-clean |
 | `NumberTheory/Erdos403` | **Erdős #403** (Frankl / Shen Lin 1976, both unpublished) — only finitely many powers of two are sums of distinct factorials (`erdos_403_finite`), and the largest is `2⁷ = 2! + 3! + 5! = 128` (`erdos_403_sharp`, `m ≤ 7`). Reconstruction via the factorial number system: a sum of distinct factorials is a factorial-base numeral with all digits `≤ 1`, and every `2^m` (`m ≥ 8`) carries a digit `≥ 2` — a fixed-modulus `12!` check, kernel-pure (no `native_decide`). | ✅ axiom-clean |
 | `Combinatorics/Erdos1213` | **Erdős #1213 / Hegyvári Thm 3** (Hegyvári 1986) — a strictly increasing sequence with consecutive gaps `≤ K` whose consecutive-block sums are all distinct has last term `< (a₁+K/2)·e^(K+1) + K·e^(2K+2)` (`erdos_1213`); hence `f(a,K)` is finite (`erdos_1213_f_finite`). First known formalization. | ✅ axiom-clean |
+| `NumberTheory/Erdos1050` | **Erdős #1050** (Borwein 1991/92) — the series `∑ 1/(2ⁿ−3)` is irrational (`erdos_1050_irrational`), via Borwein's irrationality criterion for `∑ 1/(qⁿ+r)` specialized to `q=2, r=−3`. The general engine also proves **Borwein's Theorem 1** fully axiom-free — `∑ 1/(qⁿ+c)` is irrational for any integer base of magnitude `≥ 2` and any nonzero rational `c` (`borwein_thm1_abs`), discharging the `borwein_approximants` axiom. | ✅ axiom-clean |
 
 ## What to audit (faithfulness)
 
@@ -56,6 +57,12 @@ For Erdős #1213:
   verbatim. To audit, also read `csum`/`AllCSumsDistinct` in `Basic.lean` and `hegyvariF` in
   `Main.lean` (a dozen lines). Read against Hegyvári 1986, Theorem 3.
 
+For Erdős #1050:
+
+- `LeanGallery/NumberTheory/Erdos1050/Statement.lean` — the **headline** `erdos_1050_irrational`
+  (`Irrational S`), with the series and the index convention spelled out. To audit, also read the
+  one-line `S` in `Basic.lean`. Read against the erdosproblems.com #1050 statement (Borwein 1991/92).
+
 `Engine.lean` (or, for #1213, the `Counting`/`Analytic`/`Main` proof files) is the proof; `Basic.lean`
 + `Statement.lean` are the audit surface. CI re-checks `#print axioms` so each published claim stays
 `[propext, Classical.choice, Quot.sound]`.
@@ -78,6 +85,11 @@ Toolchain and Mathlib pin live in `lean-toolchain` / `lake-manifest.json` (Lean 
 - P. Erdős and R. L. Graham, *Old and new problems and results in combinatorial number theory*,
   Monographies de L'Enseignement Mathématique **28** (1980), p. 79. Erdős problem #403,
   <https://www.erdosproblems.com/403>.
+- N. Hegyvári, *On consecutive sums in sequences*, Acta Math. Hungar. **48** (1986), 193–200.
+  <https://doi.org/10.1007/BF01949064>. Erdős problem #1213, <https://www.erdosproblems.com/1213>.
+- P. B. Borwein, *On the irrationality of `∑ 1/(qⁿ + r)`*, J. Number Theory **37** (1991), 253–259;
+  *On the irrationality of certain series*, Math. Proc. Camb. Phil. Soc. **112** (1992), 141–146.
+  Erdős problem #1050, <https://www.erdosproblems.com/1050>.
 
 ## License
 

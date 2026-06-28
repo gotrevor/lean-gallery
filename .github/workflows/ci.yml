@@ -23,7 +23,7 @@ jobs:
       # gate then asserts every printed theorem is the standard mathlib triple.
       - name: Axiom-clean gate
         run: |
-          printf 'import LeanGallery.Logic.Goodstein.Statement\nimport LeanGallery.Logic.Hydra.Statement\nimport LeanGallery.NumberTheory.Erdos403.Statement\nimport LeanGallery.Combinatorics.Erdos1213.Statement\n#print axioms LeanGallery.Logic.Goodstein.goodstein_terminates\n#print axioms LeanGallery.Logic.Hydra.hydra_terminates\n#print axioms LeanGallery.NumberTheory.Erdos403.erdos_403_finite\n#print axioms LeanGallery.NumberTheory.Erdos403.erdos_403_sharp\n#print axioms LeanGallery.Combinatorics.Erdos1213.erdos_1213\n#print axioms LeanGallery.Combinatorics.Erdos1213.erdos_1213_f_finite\n' > axcheck.lean
+          printf 'import LeanGallery.Logic.Goodstein.Statement\nimport LeanGallery.Logic.Hydra.Statement\nimport LeanGallery.NumberTheory.Erdos403.Statement\nimport LeanGallery.Combinatorics.Erdos1213.Statement\nimport LeanGallery.NumberTheory.Erdos1050\n#print axioms LeanGallery.Logic.Goodstein.goodstein_terminates\n#print axioms LeanGallery.Logic.Hydra.hydra_terminates\n#print axioms LeanGallery.NumberTheory.Erdos403.erdos_403_finite\n#print axioms LeanGallery.NumberTheory.Erdos403.erdos_403_sharp\n#print axioms LeanGallery.Combinatorics.Erdos1213.erdos_1213\n#print axioms LeanGallery.Combinatorics.Erdos1213.erdos_1213_f_finite\n#print axioms LeanGallery.NumberTheory.Erdos1050.erdos_1050_irrational\n#print axioms LeanGallery.NumberTheory.Erdos1050.borwein_thm1_abs\n' > axcheck.lean
           lake env lean axcheck.lean 2>&1 | tee ax.out
           if grep -q "sorryAx" ax.out; then echo "::error::a headline theorem uses sorryAx"; exit 1; fi
           total=$(grep -c "depends on axioms:" ax.out)
