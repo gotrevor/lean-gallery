@@ -85,6 +85,11 @@ For Erdős #482:
 + `Statement.lean` are the audit surface. CI re-checks `#print axioms` so each published claim stays
 `[propext, Classical.choice, Quot.sound]`.
 
+## Motivations 🎬
+
+Several results here started as a popular-math video. [`videos/`](videos/README.md) catalogs those
+sparks and links each to where the result lives in Lean (or flags it as a not-yet-formalized target).
+
 ## Build
 
 ```sh
