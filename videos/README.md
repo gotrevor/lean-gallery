@@ -24,7 +24,7 @@ paper; the video belongs *here*, as the spark.
 
 | Video | Creator | Topic / theorem | Formalization | Status |
 |-------|---------|-----------------|---------------|--------|
-| *"base Fibonacci"* <!-- TODO: paste exact URL --> | *(YouTube)* | **Zeckendorf representation** — every `n` is a unique sum of non-adjacent Fibonacci numbers; the induced order on representations is lexicographic | `Mathlib/Data/Nat/Fib/Zeckendorf.lean` — base file existed; I added the **lex-order** characterization (`sum_fib_lt_iff_lex`, `zeckendorf_lt_iff`/`le_iff`, `zeckendorfOrderIso`). PR: [`gotrevor/mathlib4#2`](https://github.com/gotrevor/mathlib4/pull/2). Walkthrough: `lean-journey/walkthroughs/zeckendorf-lex-order.md` | ✅ in mathlib |
+| [Base Fibonacci](https://www.youtube.com/watch?v=S5FTe5KP2Cw) | Numberphile | **Zeckendorf representation** — every `n` is a unique sum of non-adjacent Fibonacci numbers; the induced order on representations is lexicographic | `Mathlib/Data/Nat/Fib/Zeckendorf.lean` — base file existed; I added the **lex-order** characterization (`sum_fib_lt_iff_lex`, `zeckendorf_lt_iff`/`le_iff`, `zeckendorfOrderIso`). PR: [`gotrevor/mathlib4#2`](https://github.com/gotrevor/mathlib4/pull/2). Walkthrough: `lean-journey/walkthroughs/zeckendorf-lex-order.md` | ✅ in mathlib |
 
 ## Adding a row
 
