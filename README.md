@@ -16,6 +16,7 @@ promoted in here.
 | `Logic/Goodstein` | **Goodstein 1944** — every Goodstein sequence terminates (`∀ m, ∃ N, goodsteinSeq m N = 0`). Faithful hereditary-base bump, interpreted into ordinals below ε₀; strict ordinal descent + well-foundedness of `<` on `Ordinal`. | ✅ axiom-clean |
 | `Logic/Hydra` | **Kirby–Paris 1982** — Hercules always wins: every hydra dies (`hydra_terminates` — every battle reaches `leaf`). Faithful chop-a-head-regrow-at-the-grandparent move on finite rooted trees; the ε₀ Kirby–Paris ordinal `♯ ωᵒ⁽ᶜ⁾`, realized as a recursive multiset (path) order on `Mathlib/Logic/Hydra.lean`'s `CutExpand`; strict descent + well-foundedness. | ✅ axiom-clean |
 | `NumberTheory/Erdos403` | **Erdős #403** (Frankl / Shen Lin 1976, both unpublished) — only finitely many powers of two are sums of distinct factorials (`erdos_403_finite`), and the largest is `2⁷ = 2! + 3! + 5! = 128` (`erdos_403_sharp`, `m ≤ 7`). Reconstruction via the factorial number system: a sum of distinct factorials is a factorial-base numeral with all digits `≤ 1`, and every `2^m` (`m ≥ 8`) carries a digit `≥ 2` — a fixed-modulus `12!` check, kernel-pure (no `native_decide`). | ✅ axiom-clean |
+| `Combinatorics/Erdos1213` | **Erdős #1213 / Hegyvári Thm 3** (Hegyvári 1986) — a strictly increasing sequence with consecutive gaps `≤ K` whose consecutive-block sums are all distinct has last term `< (a₁+K/2)·e^(K+1) + K·e^(2K+2)` (`erdos_1213`); hence `f(a,K)` is finite (`erdos_1213_f_finite`). First known formalization. | ✅ axiom-clean |
 
 ## What to audit (faithfulness)
 
@@ -48,8 +49,16 @@ For Erdős #403:
 - `LeanGallery/NumberTheory/Erdos403/Statement.lean` — the **headlines** `erdos_403_finite`
   (finiteness) and `erdos_403_sharp` (`m ≤ 7`, sharp via `Basic.witness`).
 
-`Engine.lean` is the proof; `Basic.lean` + `Statement.lean` are the audit surface. CI re-checks
-`#print axioms` so the published claim stays `[propext, Classical.choice, Quot.sound]`.
+For Erdős #1213:
+
+- `LeanGallery/Combinatorics/Erdos1213/Statement.lean` — the **headlines** `erdos_1213` (the explicit
+  last-term bound) and `erdos_1213_f_finite` (finiteness of `f(a,K)`), with the bound written out
+  verbatim. To audit, also read `csum`/`AllCSumsDistinct` in `Basic.lean` and `hegyvariF` in
+  `Main.lean` (a dozen lines). Read against Hegyvári 1986, Theorem 3.
+
+`Engine.lean` (or, for #1213, the `Counting`/`Analytic`/`Main` proof files) is the proof; `Basic.lean`
++ `Statement.lean` are the audit surface. CI re-checks `#print axioms` so each published claim stays
+`[propext, Classical.choice, Quot.sound]`.
 
 ## Build
 
