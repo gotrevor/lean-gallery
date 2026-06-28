@@ -227,7 +227,7 @@ theorem weyl_criterion (x : ℕ → AddCircle (1:ℝ))
         rw [integral_smul, smul_eq_mul]
       have havg : (fun N : ℕ => (N:ℂ)⁻¹ * ∑ n ∈ range N, (c • g) (x n))
           = fun N : ℕ => c * ((N:ℂ)⁻¹ * ∑ n ∈ range N, g (x n)) := by
-        funext N; simp only [ContinuousMap.smul_apply, smul_eq_mul, Finset.mul_sum]; ring
+        funext N; simp only [ContinuousMap.smul_apply, smul_eq_mul, Finset.mul_sum]; ring_nf
       rw [hintsmul, havg]; exact ih.const_mul c
   -- Step 3: density extends the property to all continuous `f`.
   have hdense : Dense ((Submodule.span ℂ (Set.range (fourier (T := (1:ℝ))))) : Set C(AddCircle (1:ℝ), ℂ)) :=

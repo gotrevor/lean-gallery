@@ -106,7 +106,7 @@ theorem weyl_criterion_torus {d : Type*} [Fintype d] (x : ℕ → (d → AddCirc
         simp only [ContinuousMap.smul_apply]; rw [integral_smul, smul_eq_mul]
       have havg : (fun N : ℕ => (N:ℂ)⁻¹ * ∑ n ∈ range N, (c • g) (x n))
           = fun N : ℕ => c * ((N:ℂ)⁻¹ * ∑ n ∈ range N, g (x n)) := by
-        funext N; simp only [ContinuousMap.smul_apply, smul_eq_mul, Finset.mul_sum]; ring
+        funext N; simp only [ContinuousMap.smul_apply, smul_eq_mul, Finset.mul_sum]; ring_nf
       rw [hintsmul, havg]; exact ih.const_mul c
   -- Step 3: density.
   have hdense : Dense ((Submodule.span ℂ (Set.range (mFourier (d := d)))) :

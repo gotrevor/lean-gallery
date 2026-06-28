@@ -56,8 +56,8 @@ lemma Dsum_rec (x : ℕ → ℝ) (hx : Function.Injective x) (s : Finset ℕ) (a
   unfold Dsum Wprod;
   have h_split : ∑ j ∈ s, (x j ^ m * (x j - x a)) / (∏ l ∈ s.erase j, (x j - x l)) = ∑ j ∈ s.erase a, x j ^ m / (∏ l ∈ (s.erase a).erase j, (x j - x l)) := by
     have h_split : ∀ j ∈ s.erase a, (x j ^ m * (x j - x a)) / (∏ l ∈ s.erase j, (x j - x l)) = x j ^ m / (∏ l ∈ (s.erase a).erase j, (x j - x l)) := by
-      intro j hj; rw [ Finset.prod_eq_prod_sdiff_singleton_mul <| Finset.mem_erase_of_ne_of_mem ( by aesop ) ha ] ; ring;
-      rw [ show ( s.erase a ).erase j = s.erase j \ { a } by ext; aesop ] ; ring;
+      intro j hj; rw [ Finset.prod_eq_prod_sdiff_singleton_mul <| Finset.mem_erase_of_ne_of_mem ( by aesop ) ha ] ; ring_nf;
+      rw [ show ( s.erase a ).erase j = s.erase j \ { a } by ext; aesop ] ; ring_nf;
       grind;
     rw [ ← Finset.sum_congr rfl h_split, Finset.sum_erase_eq_sub ha ] ; aesop;
   simp_all +decide [ mul_sub, sub_div, pow_succ, mul_div_assoc, Finset.mul_sum _ _ _ ];
@@ -69,8 +69,8 @@ lemma Dsum_zero (x : ℕ → ℝ) (hx : Function.Injective x) (s : Finset ℕ) (
   induction' s using Finset.strongInduction with s ih;
   by_cases h_two_elements : s.card = 2;
   · rw [ Finset.card_eq_two ] at h_two_elements;
-    rcases h_two_elements with ⟨ a, b, hab, rfl ⟩ ; unfold Dsum; simp +decide [ hab ] ; ring;
-    unfold Wprod; simp +decide [ *, Finset.prod ] ; ring;
+    rcases h_two_elements with ⟨ a, b, hab, rfl ⟩ ; unfold Dsum; simp +decide [ hab ] ; ring_nf;
+    unfold Wprod; simp +decide [ *, Finset.prod ] ; ring_nf;
     rw [ show -x a + x b = - ( x a - x b ) by ring, inv_neg ] ; ring;
   · obtain ⟨a, ha, b, hb, hab⟩ : ∃ a ∈ s, ∃ b ∈ s, a ≠ b :=
       one_lt_card.mp hs
