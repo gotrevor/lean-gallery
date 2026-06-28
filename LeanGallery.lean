@@ -4,6 +4,9 @@ import LeanGallery.Logic.Goodstein.Statement
 import LeanGallery.Logic.Hydra.Basic
 import LeanGallery.Logic.Hydra.Engine
 import LeanGallery.Logic.Hydra.Statement
+import LeanGallery.NumberTheory.Erdos403.Basic
+import LeanGallery.NumberTheory.Erdos403.Engine
+import LeanGallery.NumberTheory.Erdos403.Statement
 
 /-!
 # LeanGallery
@@ -19,4 +22,6 @@ results are promoted in here.
 ## Results
 - `Logic/Goodstein` — Goodstein's theorem: every Goodstein sequence terminates (Goodstein 1944).
 - `Logic/Hydra` — Kirby–Paris hydra: Hercules always wins / every hydra dies (termination, ε₀).
+- `NumberTheory/Erdos403` — Erdős #403: only finitely many powers of two are sums of distinct
+  factorials; the largest is `2⁷ = 2! + 3! + 5! = 128` (Frankl / Shen Lin 1976).
 -/

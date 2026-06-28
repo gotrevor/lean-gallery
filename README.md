@@ -15,6 +15,7 @@ promoted in here.
 |------|--------|--------|
 | `Logic/Goodstein` | **Goodstein 1944** — every Goodstein sequence terminates (`∀ m, ∃ N, goodsteinSeq m N = 0`). Faithful hereditary-base bump, interpreted into ordinals below ε₀; strict ordinal descent + well-foundedness of `<` on `Ordinal`. | ✅ axiom-clean |
 | `Logic/Hydra` | **Kirby–Paris 1982** — Hercules always wins: every hydra dies (`hydra_terminates` — every battle reaches `leaf`). Faithful chop-a-head-regrow-at-the-grandparent move on finite rooted trees; the ε₀ Kirby–Paris ordinal `♯ ωᵒ⁽ᶜ⁾`, realized as a recursive multiset (path) order on `Mathlib/Logic/Hydra.lean`'s `CutExpand`; strict descent + well-foundedness. | ✅ axiom-clean |
+| `NumberTheory/Erdos403` | **Erdős #403** (Frankl / Shen Lin 1976, both unpublished) — only finitely many powers of two are sums of distinct factorials (`erdos_403_finite`), and the largest is `2⁷ = 2! + 3! + 5! = 128` (`erdos_403_sharp`, `m ≤ 7`). Reconstruction via the factorial number system: a sum of distinct factorials is a factorial-base numeral with all digits `≤ 1`, and every `2^m` (`m ≥ 8`) carries a digit `≥ 2` — a fixed-modulus `12!` check, kernel-pure (no `native_decide`). | ✅ axiom-clean |
 
 ## What to audit (faithfulness)
 
@@ -38,6 +39,15 @@ For Kirby–Paris:
 - `LeanGallery/Logic/Hydra/Statement.lean` — the **headline** `hydra_terminates` (every battle
   reaches `leaf`, over all head choices and all regrowth schedules).
 
+For Erdős #403:
+
+- `LeanGallery/NumberTheory/Erdos403/Basic.lean` — the **definition** `factSum S = ∑_{a ∈ S} a!`
+  (a sum of distinct factorials is exactly `factSum S` for some `S : Finset ℕ`), plus `decide`
+  anti-vacuity anchors (`factSum {2,3,5} = 2⁷ = 128`, and the `0! = 1!` collision `{2}` vs `{0,1}`).
+  Read this against the problem statement.
+- `LeanGallery/NumberTheory/Erdos403/Statement.lean` — the **headlines** `erdos_403_finite`
+  (finiteness) and `erdos_403_sharp` (`m ≤ 7`, sharp via `Basic.witness`).
+
 `Engine.lean` is the proof; `Basic.lean` + `Statement.lean` are the audit surface. CI re-checks
 `#print axioms` so the published claim stays `[propext, Classical.choice, Quot.sound]`.
 
@@ -56,6 +66,9 @@ Toolchain and Mathlib pin live in `lean-toolchain` / `lake-manifest.json` (Lean 
   no. 2, 33–41. <https://doi.org/10.2307/2268019>
 - L. Kirby and J. Paris, *Accessible independence results for Peano arithmetic*, Bull. London
   Math. Soc. **14** (1982), no. 4, 285–293. <https://doi.org/10.1112/blms/14.4.285>
+- P. Erdős and R. L. Graham, *Old and new problems and results in combinatorial number theory*,
+  Monographies de L'Enseignement Mathématique **28** (1980), p. 79. Erdős problem #403,
+  <https://www.erdosproblems.com/403>.
 
 ## License
 
