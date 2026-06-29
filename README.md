@@ -9,6 +9,8 @@ This is a **publish-only** collection: every result here compiles cleanly with *
 work-in-progress development happens in private repositories; only finished, axiom-clean results are
 promoted in here.
 
+📖 **[Browse the API docs](https://gotrevor.github.io/lean-gallery/)** (doc-gen4, rebuilt from `main` on every push).
+
 ## Contents
 
 | Area | Result | Status |
