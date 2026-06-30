@@ -80,8 +80,14 @@ jobs:
           ' lakefile.toml)
           if [ -z "$LIB" ]; then echo "::error::could not detect parent library from docbuild/lakefile.toml"; exit 1; fi
           echo "Building docs for library: $LIB"
+          echo "DOC_LIB=$LIB" >> "$GITHUB_ENV"   # hand the lib name to the trim step
           lake exe cache get || true
           lake build "$LIB:docs"
+      # doc-gen4 renders the WHOLE import closure (~1.3 GB, 99.6% Mathlib). Keep only
+      # the gallery library's pages and rewrite dependency links to the hosted Mathlib
+      # docs, so the published site is a few MB. See docbuild/trim-docs.py for the why.
+      - name: Trim docs to gallery (link deps to hosted mathlib4_docs)
+        run: python3 docbuild/trim-docs.py docbuild/.lake/build/doc "$DOC_LIB"
       - name: Deploy to GitHub Pages
         if: >
           github.event_name == 'push'
