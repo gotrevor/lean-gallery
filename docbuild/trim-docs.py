@@ -127,7 +127,12 @@ def main():
         sys.exit("error: %s/%s not found - is the library name right?" % (doc_dir, lib))
 
     top_dirs = [e for e in os.listdir(doc_dir) if os.path.isdir(os.path.join(doc_dir, e))]
-    dep_mods = sorted(d for d in top_dirs if d != lib and d not in ASSET_DIRS)
+    # Anything that isn't the kept library, doc-gen4 chrome, or a dotdir (e.g. a
+    # stray .git when run over a checked-out gh-pages tree) is a dependency module.
+    dep_mods = sorted(
+        d for d in top_dirs
+        if d != lib and d not in ASSET_DIRS and not d.startswith(".")
+    )
     print("Keeping library:   ", lib)
     print("Dropping deps:     ", ", ".join(dep_mods))
 
