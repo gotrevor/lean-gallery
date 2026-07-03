@@ -558,15 +558,8 @@ lemma cleared_error_tendsto :
 `zB = −3·∑_{j} 1/(2^{(j+2)+2}−3) = −3·(S − 1 − 1/5) = −3·S + 18/5`. Irrationality is invariant
 under the nonzero-rational affine map. -/
 lemma irrational_S_iff_zB : Irrational S ↔ Irrational zB := by
-  -- Summability (auto-formalized by Aristotle, verified axiom-clean): compare with `∑ 2^{-n}`.
-  have hsummable : Summable (fun n : ℕ => (1 : ℝ) / ((2 : ℝ) ^ (n + 2) - 3)) := by
-    ring_nf
-    exact Summable.of_nonneg_of_le
-      (fun n => inv_nonneg.mpr <| by
-        nlinarith [show (2 : ℝ) ^ n ≥ 1 by exact one_le_pow₀ (by norm_num)])
-      (fun n => by
-        rw [inv_le_comm₀] <;> norm_num <;> induction n <;> norm_num [pow_succ'] at * <;> nlinarith)
-      summable_geometric_two
+  -- Summability (compare with `∑ 2^{-n}`); lifted to `S_summable` in `Basic.lean`.
+  have hsummable : Summable (fun n : ℕ => (1 : ℝ) / ((2 : ℝ) ^ (n + 2) - 3)) := S_summable
   have hkey : zB = -3 * S + 18 / 5 := by
     have hterm : ∀ j : ℕ,
         (1 - cB * qB ^ (j + 1))⁻¹ = -3 * ((1 : ℝ) / ((2 : ℝ) ^ ((j + 2) + 2) - 3)) := by

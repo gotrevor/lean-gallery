@@ -32,6 +32,16 @@ are rational, and **adding/removing finitely many rationals does not change irra
 index base is a free, faithfulness-irrelevant choice. We start at `n+2` to keep every term positive. -/
 noncomputable def S : ℝ := ∑' n : ℕ, (1 : ℝ) / ((2 : ℝ) ^ (n + 2) - 3)
 
+/-- The tail series defining `S` is summable: every term `1/(2^(n+2)−3)` is dominated by `2^{-n}`. -/
+lemma S_summable : Summable (fun n : ℕ => (1 : ℝ) / ((2 : ℝ) ^ (n + 2) - 3)) := by
+  ring_nf
+  exact Summable.of_nonneg_of_le
+    (fun n => inv_nonneg.mpr <| by
+      nlinarith [show (2 : ℝ) ^ n ≥ 1 by exact one_le_pow₀ (by norm_num)])
+    (fun n => by
+      rw [inv_le_comm₀] <;> norm_num <;> induction n <;> norm_num [pow_succ'] at * <;> nlinarith)
+    summable_geometric_two
+
 /- The headline theorem `erdos_1050 : Irrational S` is proved in `Approximants.lean` (it needs the
 proof engine); `Statement.lean` re-exports it as the audit surface. -/
 

@@ -10,32 +10,58 @@ import LeanGallery.NumberTheory.Erdos1050.Lemma3
 
 **If you are checking that this repository proves the right thing, read THIS file.**
 
-Everything else (`Criterion.lean`, `Approximants.lean`) is the proof engine. The single theorem below
-is the load-bearing statement; it is *definitionally* `LeanGallery.NumberTheory.Erdos1050.erdos_1050`, so it cannot drift, but
-here the series and the claim are spelled out in full.
+Everything else (`Criterion.lean`, `Approximants.lean`) is the proof engine. The theorems below are
+the load-bearing statements; the headline `erdos_1050_literal` is stated on the **literal** series
+`∑_{n ≥ 0} 1/(2ⁿ − 3)` exactly as posed, so there is nothing to reconcile against the source.
 
-To confirm faithfulness you only need to read, in addition to the signature below:
-* `LeanGallery.NumberTheory.Erdos1050.S` in `Basic.lean` (1 line) — the series, with its index-base note.
-
-The claim: the real number `S = ∑_{n} 1/(2ⁿ − 3)` is irrational.
+The claim: the real number `∑_{n ≥ 0} 1/(2ⁿ − 3)` is irrational.
 
 * **Problem source.** P. Erdős & R. Graham, relayed at <https://www.erdosproblems.com/1050>
   ("Is `∑ 1/(2ⁿ − 3)` irrational?", answer yes).
 * **Resolving theorem.** P. B. Borwein, *On the irrationality of `∑ 1/(qⁿ + r)`*, J. Number Theory
   **37** (1991) 253–259 (and the cleaner *On the irrationality of certain series*, Math. Proc. Camb.
   Phil. Soc. **112** (1992) 141–146), specialized to `q = 2, r = −3`.
-* **Index convention.** `S` sums `1/(2^(n+2) − 3)` over `n ≥ 0` (all denominators positive). The
-  classical series includes finitely many lower terms that are rational; since irrationality is
-  invariant under adding/removing finitely many rationals, this is a faithful encoding. A reviewer
-  comparing to the literature should confirm exactly this point and nothing else.
+* **Well-definedness.** `2ⁿ − 3` is never `0` (`2ⁿ = 3` has no solution), so every term `1/(2ⁿ − 3)`
+  is a genuine real; the `n = 0, 1` terms are the (finite, rational) values `−1/2` and `−1`.
 
-When proven, `#print axioms erdos_1050` should end at `[propext, Classical.choice, Quot.sound]`
+The proof engine works with the positive-denominator tail `S = ∑_{n ≥ 0} 1/(2^(n+2) − 3)` (see
+`Basic.lean`); the headline reduces the literal series to it by
+`(∑_{n ≥ 0} 1/(2ⁿ − 3)) = -3/2 + S` — the first two terms `1/(2⁰−3) + 1/(2¹−3) = -1/2 + -1 = -3/2`
+are rational, and irrationality is invariant under adding a rational, so the two statements are
+equivalent (`erdos_1050_literal ↔ erdos_1050`). This equivalence is *proved*, not asserted.
+
+When proven, `#print axioms erdos_1050_literal` should end at `[propext, Classical.choice, Quot.sound]`
 (kernel-pure; no `native_decide`, no custom axioms).
 -/
 
 namespace LeanGallery.NumberTheory.Erdos1050
 
-/-- **Erdős Problem #1050.** The series `∑ 1/(2ⁿ − 3)` is irrational. -/
+open scoped BigOperators
+
+/-- The literal Erdős–Graham series `∑_{n ≥ 0} 1/(2ⁿ − 3)`, exactly as posed on erdosproblems.com. -/
+noncomputable def Slit : ℝ := ∑' n : ℕ, (1 : ℝ) / ((2 : ℝ) ^ n - 3)
+
+/-- The literal series is the positive-denominator tail `S` shifted by the two rational low terms:
+`∑_{n ≥ 0} 1/(2ⁿ − 3) = -3/2 + S`, since `1/(2⁰−3) + 1/(2¹−3) = -1/2 + -1 = -3/2`. -/
+theorem Slit_eq : Slit = -3 / 2 + S := by
+  have hsummable : Summable (fun n : ℕ => (1 : ℝ) / ((2 : ℝ) ^ n - 3)) := by
+    have h := (summable_nat_add_iff (f := fun n : ℕ => (1 : ℝ) / ((2 : ℝ) ^ n - 3)) 2)
+    exact h.mp (by simpa using S_summable)
+  have hsplit := Summable.sum_add_tsum_nat_add
+    (f := fun n : ℕ => (1 : ℝ) / ((2 : ℝ) ^ n - 3)) 2 hsummable
+  have hfin : (∑ i ∈ Finset.range 2, (1 : ℝ) / ((2 : ℝ) ^ i - 3)) = -3 / 2 := by
+    simp [Finset.sum_range_succ]; norm_num
+  rw [hfin] at hsplit
+  simp only [Slit, S]
+  rw [← hsplit]
+
+/-- **Erdős Problem #1050.** The series `∑_{n ≥ 0} 1/(2ⁿ − 3)` (literal form) is irrational. -/
+theorem erdos_1050_literal : Irrational Slit := by
+  rw [Slit_eq, show (-3 / 2 : ℝ) + S = S + ((-3 / 2 : ℚ) : ℝ) by push_cast; ring,
+    irrational_add_ratCast_iff]
+  exact erdos_1050
+
+/-- **Erdős Problem #1050** (positive-denominator tail form, used by the proof engine). -/
 theorem erdos_1050_irrational : Irrational S := erdos_1050
 
 end LeanGallery.NumberTheory.Erdos1050
