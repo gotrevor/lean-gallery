@@ -32,7 +32,8 @@ are rational, and **adding/removing finitely many rationals does not change irra
 index base is a free, faithfulness-irrelevant choice. We start at `n+2` to keep every term positive. -/
 noncomputable def S : ℝ := ∑' n : ℕ, (1 : ℝ) / ((2 : ℝ) ^ (n + 2) - 3)
 
-/-- The tail series defining `S` is summable: every term `1/(2^(n+2)−3)` is dominated by `2^{-n}`. -/
+/-- The tail series defining `S` is summable: every term `1/(2^(n+2)−3)` is dominated by `2^{-n}`.
+(Auto-formalized by Harmonic's Aristotle, ported here and verified axiom-clean.) -/
 lemma S_summable : Summable (fun n : ℕ => (1 : ℝ) / ((2 : ℝ) ^ (n + 2) - 3)) := by
   ring_nf
   exact Summable.of_nonneg_of_le
