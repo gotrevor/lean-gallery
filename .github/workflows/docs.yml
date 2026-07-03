@@ -8,6 +8,15 @@
 # Deliberately a SEPARATE, non-required workflow from the build/test CI (which stays the
 # merge gate). A docs break is an honest red X that never blocks a merge.
 #
+# Publishing model: GitHub Pages source = "GitHub Actions" (build_type=workflow). This
+# workflow builds the site and deploys it DIRECTLY via actions/deploy-pages — there is NO
+# gh-pages branch, so GitHub's legacy `pages-build-deployment` never runs. That legacy
+# branch-deploy was the source of the jank: an orphaned "GitHub Pages / queued" check-suite
+# that never resolves on the source commit, plus intermittent "Deployment failed, try again
+# later" races between two deployers fighting over the one github-pages environment. With
+# the artifact deployed straight from this run, the deployment attaches to THIS commit and
+# resolves to a single clean green check.
+#
 # Build cadence — docs build ONLY off the default branch, release/rc tags, or on-demand;
 # never on an arbitrary PR:
 #   • push to main/master   → build + deploy to Pages (the source of truth)
@@ -27,13 +36,16 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, labeled]
 
-# Serialize Pages deploys so concurrent runs can't hit the "in progress deployment" race.
+# GitHub Pages' recommended settings: one queue, and NEVER cancel an in-progress deploy —
+# cancelling mid-deploy is what leaves the github-pages environment in an errored state.
 concurrency:
-  group: pages
-  cancel-in-progress: true
+  group: "pages"
+  cancel-in-progress: false
 
 permissions:
-  contents: write       # peaceiris pushes the built site to the gh-pages branch
+  contents: read
+  pages: write          # actions/deploy-pages publishes to the github-pages environment
+  id-token: write       # OIDC token deploy-pages authenticates with
   pull-requests: read   # paths-filter reads the PR's changed-file list
 
 jobs:
@@ -88,11 +100,29 @@ jobs:
       # docs, so the published site is a few MB. See docbuild/trim-docs.py for the why.
       - name: Trim docs to gallery (link deps to hosted mathlib4_docs)
         run: python3 docbuild/trim-docs.py docbuild/.lake/build/doc "$DOC_LIB"
-      - name: Deploy to GitHub Pages
+      # Upload the trimmed site as the Pages artifact (only when we'll actually deploy).
+      - name: Upload Pages artifact
         if: >
           github.event_name == 'push'
           && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
-        uses: peaceiris/actions-gh-pages@v4
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: docbuild/.lake/build/doc
+          path: docbuild/.lake/build/doc
+
+  # Deploy the uploaded artifact straight to the github-pages environment. Runs only on a
+  # push to the default branch, so the deployment attaches to THAT commit and shows a single
+  # clean green check — no gh-pages branch, no legacy pages-build-deployment, no orphaned
+  # "GitHub Pages / queued" suite.
+  deploy:
+    needs: docs
+    if: >
+      github.event_name == 'push'
+      && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
