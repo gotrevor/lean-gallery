@@ -28,27 +28,24 @@ jobs:
       - uses: actions/checkout@v4
       # elan + `lake exe cache get` (prebuilt Mathlib oleans) + `lake build`.
       - uses: leanprover/lean-action@v1
-      # Runs the checked-in audit file (scripts/AxiomCheck.lean = the imports + one
-      # `#print axioms` per headline) and asserts every printed theorem is the standard
-      # triple `[propext, Classical.choice, Quot.sound]`. Edit the audit file to add/remove
-      # a headline; bump the expected count (13) here to match.
+      # Runs the checked-in audit file (scripts/AxiomCheck.lean = the imports + one guarded
+      # `#print axioms` per headline). Each print is wrapped in `#guard_msgs` asserting the
+      # standard triple `[propext, Classical.choice, Quot.sound]`, so any drift (a new axiom,
+      # a `sorry`/`sorryAx`, or a renamed/removed theorem) makes the file fail to elaborate —
+      # the exit code IS the gate. Edit the audit file to add/remove a headline; bump the
+      # expected count (13) below to match.
       - name: Axiom-clean gate (reference point of truth)
         run: |
-          echo "===== #print axioms (the point of truth) ====="
-          lake env lean scripts/AxiomCheck.lean 2>&1 | tee ax.out
-          echo "=============================================="
-          # `#print axioms` wraps long qualified names across lines, so collapse all
-          # whitespace before asserting — else a wrapped headline (e.g. the long-named
-          # erdos482_resolution) splits "depends on axioms:" from its triple and would
-          # falsely fail the gate. Collapsing makes the per-theorem check wrap-proof.
-          collapsed=$(tr '\n' ' ' < ax.out | sed 's/  */ /g')
-          if printf '%s' "$collapsed" | grep -q "sorryAx"; then echo "::error::a headline theorem uses sorryAx"; cat ax.out; exit 1; fi
-          total=$(printf '%s' "$collapsed" | grep -o "depends on axioms:" | wc -l | tr -d ' ')
-          clean=$(printf '%s' "$collapsed" | grep -o "depends on axioms: \[propext, Classical.choice, Quot.sound\]" | wc -l | tr -d ' ')
-          if [ "$total" -lt 13 ] || [ "$total" -ne "$clean" ]; then
-            echo "::error::a headline theorem has unexpected axioms or is missing (total=$total clean=$clean, want 13)"; cat ax.out; exit 1
+          # A clean run is SILENT (the guards consume their messages); axiom drift makes
+          # this exit non-zero. No output parsing — the exit code is the gate.
+          lake env lean scripts/AxiomCheck.lean
+          # Belt-and-suspenders: catch a silently-dropped headline. Every audited theorem
+          # keeps a guarded block, so #print-axioms lines == #guard_msgs lines == 13.
+          prints=$(grep -c '^#print axioms ' scripts/AxiomCheck.lean)
+          guards=$(grep -c '^#guard_msgs (whitespace := lax) in$' scripts/AxiomCheck.lean)
+          if [ "$prints" -ne 13 ] || [ "$guards" -ne 13 ]; then
+            echo "::error::expected 13 guarded #print axioms blocks (found prints=$prints guards=$guards)"; exit 1
           fi
-          rm -f ax.out
 
   # ---- Docs: render + publish, LAST ----------------------------------------------------
   # Kicked off only after the axiom gate is green (needs: axioms), and only on a push to the
