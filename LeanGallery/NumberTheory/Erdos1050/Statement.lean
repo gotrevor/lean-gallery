@@ -64,4 +64,33 @@ theorem erdos_1050_literal : Irrational Slit := by
 /-- **Erdős Problem #1050** (positive-denominator tail form, used by the proof engine). -/
 theorem erdos_1050_irrational : Irrational S := erdos_1050
 
+/-! ### Non-vacuity anchors
+
+Executable evidence that the series computes as intended, so the irrationality claim is not an
+artifact of a mis-stated series. (The claim is already self-certifying against the worst failure
+mode: mathlib sets a non-summable `tsum` to `0`, and `Irrational 0` is false — so
+`erdos_1050_literal` is provable only because the series genuinely converges to a non-rational real,
+never vacuously.) -/
+
+/-- Well-definedness: no term is a junk `1/0`, since the denominator `2ⁿ − 3` is never zero. -/
+example (n : ℕ) : (2 : ℝ) ^ n - 3 ≠ 0 := by
+  rcases lt_or_ge n 2 with h | h
+  · interval_cases n <;> norm_num
+  · have h4 : (4 : ℝ) ≤ 2 ^ n := by
+      calc (4 : ℝ) = 2 ^ 2 := by norm_num
+        _ ≤ 2 ^ n := pow_le_pow_right₀ (by norm_num) h
+    intro hc; nlinarith
+
+/-- The first four terms compute to the expected values (the `n = 0, 1` terms are the rationals
+`−1/2, −1`; the series first goes positive at `n = 2`). -/
+example : (1 : ℝ) / (2 ^ 0 - 3) = -1 / 2 := by norm_num
+example : (1 : ℝ) / (2 ^ 1 - 3) = -1 := by norm_num
+example : (1 : ℝ) / (2 ^ 2 - 3) = 1 := by norm_num
+example : (1 : ℝ) / (2 ^ 3 - 3) = 1 / 5 := by norm_num
+
+/-- The rational shift connecting the literal series to the engine's tail `S`: the two low terms sum
+to exactly `−3/2` (this is the content of `Slit_eq`). -/
+example : (∑ i ∈ Finset.range 2, (1 : ℝ) / (2 ^ i - 3)) = -3 / 2 := by
+  simp [Finset.sum_range_succ]; norm_num
+
 end LeanGallery.NumberTheory.Erdos1050
