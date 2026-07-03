@@ -39,11 +39,11 @@ namespace LeanGallery.NumberTheory.Erdos1050
 open scoped BigOperators
 
 /-- The literal Erdős–Graham series `∑_{n ≥ 0} 1/(2ⁿ − 3)`, exactly as posed on erdosproblems.com. -/
-noncomputable def Slit : ℝ := ∑' n : ℕ, (1 : ℝ) / ((2 : ℝ) ^ n - 3)
+noncomputable def Sliteral : ℝ := ∑' n : ℕ, (1 : ℝ) / ((2 : ℝ) ^ n - 3)
 
 /-- The literal series is the positive-denominator tail `S` shifted by the two rational low terms:
 `∑_{n ≥ 0} 1/(2ⁿ − 3) = -3/2 + S`, since `1/(2⁰−3) + 1/(2¹−3) = -1/2 + -1 = -3/2`. -/
-theorem Slit_eq : Slit = -3 / 2 + S := by
+theorem Sliteral_eq : Sliteral = -3 / 2 + S := by
   have hsummable : Summable (fun n : ℕ => (1 : ℝ) / ((2 : ℝ) ^ n - 3)) := by
     have h := (summable_nat_add_iff (f := fun n : ℕ => (1 : ℝ) / ((2 : ℝ) ^ n - 3)) 2)
     exact h.mp (by simpa using S_summable)
@@ -52,12 +52,12 @@ theorem Slit_eq : Slit = -3 / 2 + S := by
   have hfin : (∑ i ∈ Finset.range 2, (1 : ℝ) / ((2 : ℝ) ^ i - 3)) = -3 / 2 := by
     simp [Finset.sum_range_succ]; norm_num
   rw [hfin] at hsplit
-  simp only [Slit, S]
+  simp only [Sliteral, S]
   rw [← hsplit]
 
 /-- **Erdős Problem #1050.** The series `∑_{n ≥ 0} 1/(2ⁿ − 3)` (literal form) is irrational. -/
-theorem erdos_1050_literal : Irrational Slit := by
-  rw [Slit_eq, show (-3 / 2 : ℝ) + S = S + ((-3 / 2 : ℚ) : ℝ) by push_cast; ring,
+theorem erdos_1050_literal : Irrational Sliteral := by
+  rw [Sliteral_eq, show (-3 / 2 : ℝ) + S = S + ((-3 / 2 : ℚ) : ℝ) by push_cast; ring,
     irrational_add_ratCast_iff]
   exact erdos_1050
 
@@ -89,7 +89,7 @@ example : (1 : ℝ) / (2 ^ 2 - 3) = 1 := by norm_num
 example : (1 : ℝ) / (2 ^ 3 - 3) = 1 / 5 := by norm_num
 
 /-- The rational shift connecting the literal series to the engine's tail `S`: the two low terms sum
-to exactly `−3/2` (this is the content of `Slit_eq`). -/
+to exactly `−3/2` (this is the content of `Sliteral_eq`). -/
 example : (∑ i ∈ Finset.range 2, (1 : ℝ) / (2 ^ i - 3)) = -3 / 2 := by
   simp [Finset.sum_range_succ]; norm_num
 
