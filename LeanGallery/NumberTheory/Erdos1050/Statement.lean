@@ -6,32 +6,39 @@ Authors: Trevor Morris
 import LeanGallery.NumberTheory.Erdos1050.Lemma3
 
 /-!
-# Erdős #1050 — the designated statement (AUDIT SURFACE)
+# Erdős Problem #1050 — is `∑ 1/(2ⁿ − 3)` irrational?
 
-**If you are checking that this repository proves the right thing, read THIS file.**
+## The statement
 
-Everything else (`Criterion.lean`, `Approximants.lean`) is the proof engine. The theorems below are
-the load-bearing statements; the headline `erdos_1050_literal` is stated on the **literal** series
-`∑_{n ≥ 0} 1/(2ⁿ − 3)` exactly as posed, so there is nothing to reconcile against the source.
+> The real number `∑_{n ≥ 0} 1/(2ⁿ − 3)` is irrational.
 
-The claim: the real number `∑_{n ≥ 0} 1/(2ⁿ − 3)` is irrational.
+Formalised as `erdos_1050_literal : Irrational Sliteral`, where `Sliteral := ∑' n, 1/(2ⁿ − 3)` is
+defined verbatim just below. It is stated on the **literal** series exactly as posed on
+erdosproblems.com, so there is nothing to reconcile against the source.
+
+**This file is the audit surface.** To check that this repository proves the *right thing*, read only
+this file: `Sliteral` and `erdos_1050_literal` are the entire trusted statement. Everything else
+(`Basic.lean`, `Criterion.lean`, `Approximants.lean`, `Lemma3.lean`, …) is the proof engine.
+
+## Provenance
 
 * **Problem source.** P. Erdős & R. Graham, relayed at <https://www.erdosproblems.com/1050>
   ("Is `∑ 1/(2ⁿ − 3)` irrational?", answer yes).
 * **Resolving theorem.** P. B. Borwein, *On the irrationality of `∑ 1/(qⁿ + r)`*, J. Number Theory
   **37** (1991) 253–259 (and the cleaner *On the irrationality of certain series*, Math. Proc. Camb.
   Phil. Soc. **112** (1992) 141–146), specialized to `q = 2, r = −3`.
+
+## Faithfulness notes
+
 * **Well-definedness.** `2ⁿ − 3` is never `0` (`2ⁿ = 3` has no solution), so every term `1/(2ⁿ − 3)`
   is a genuine real; the `n = 0, 1` terms are the (finite, rational) values `−1/2` and `−1`.
-
-The proof engine works with the positive-denominator tail `S = ∑_{n ≥ 0} 1/(2^(n+2) − 3)` (see
-`Basic.lean`); the headline reduces the literal series to it by
-`(∑_{n ≥ 0} 1/(2ⁿ − 3)) = -3/2 + S` — the first two terms `1/(2⁰−3) + 1/(2¹−3) = -1/2 + -1 = -3/2`
-are rational, and irrationality is invariant under adding a rational, so the two statements are
-equivalent (`erdos_1050_literal ↔ erdos_1050`). This equivalence is *proved*, not asserted.
-
-When proven, `#print axioms erdos_1050_literal` should end at `[propext, Classical.choice, Quot.sound]`
-(kernel-pure; no `native_decide`, no custom axioms).
+* **Reduction (proved, not asserted).** The proof engine works with the positive-denominator tail
+  `S = ∑_{n ≥ 0} 1/(2^(n+2) − 3)` (see `Basic.lean`); the headline reduces the literal series to it by
+  `(∑_{n ≥ 0} 1/(2ⁿ − 3)) = -3/2 + S` — the first two terms `1/(2⁰−3) + 1/(2¹−3) = -1/2 + -1 = -3/2`
+  are rational, and irrationality is invariant under adding a rational, so `erdos_1050_literal ↔
+  erdos_1050`. This equivalence is `Sliteral_eq`, proved below.
+* **Axiom footprint.** `#print axioms erdos_1050_literal` should end at
+  `[propext, Classical.choice, Quot.sound]` (kernel-pure; no `native_decide`, no custom axioms).
 -/
 
 namespace LeanGallery.NumberTheory.Erdos1050
