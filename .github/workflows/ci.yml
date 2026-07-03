@@ -6,25 +6,37 @@ on:
   pull_request:
   workflow_dispatch:
 
-# Supersede stale runs on the same ref.
+# Supersede stale runs on the same ref — only the latest commit needs to verify + publish.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+  pages: write        # actions/deploy-pages publishes to the github-pages environment
+  id-token: write     # OIDC token deploy-pages authenticates with
+
 jobs:
-  build:
+  # ---- Reference point of truth --------------------------------------------------------
+  # Build the library, then #print axioms for every headline theorem and assert each is the
+  # standard mathlib triple (no sorry, no cheat axioms). This is the authoritative "does the
+  # repo prove the right thing, honestly" gate. Fast (~3 min on cached Mathlib oleans) and it
+  # gates everything downstream — docs don't render or publish unless this is green.
+  axioms:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       # elan + `lake exe cache get` (prebuilt Mathlib oleans) + `lake build`.
       - uses: leanprover/lean-action@v1
-      # Prove the published claim: every headline theorem has no `sorry`, no cheat
-      # axioms. Each entry adds its Statement import + `#print axioms` line below; the
-      # gate then asserts every printed theorem is the standard mathlib triple.
-      - name: Axiom-clean gate
+      # Runs the checked-in audit file (scripts/AxiomCheck.lean = the imports + one
+      # `#print axioms` per headline) and asserts every printed theorem is the standard
+      # triple `[propext, Classical.choice, Quot.sound]`. Edit the audit file to add/remove
+      # a headline; bump the expected count (13) here to match.
+      - name: Axiom-clean gate (reference point of truth)
         run: |
-          printf 'import LeanGallery.Logic.Goodstein.Statement\nimport LeanGallery.Logic.Hydra.Statement\nimport LeanGallery.NumberTheory.Erdos403.Statement\nimport LeanGallery.Combinatorics.Erdos1213.Statement\nimport LeanGallery.NumberTheory.Erdos1050\nimport LeanGallery.Combinatorics.Erdos880.Statement\nimport LeanGallery.NumberTheory.Erdos482.Statement\n#print axioms LeanGallery.Logic.Goodstein.goodstein_terminates\n#print axioms LeanGallery.Logic.Hydra.hydra_terminates\n#print axioms LeanGallery.NumberTheory.Erdos403.erdos_403_finite\n#print axioms LeanGallery.NumberTheory.Erdos403.erdos_403_sharp\n#print axioms LeanGallery.Combinatorics.Erdos1213.erdos_1213\n#print axioms LeanGallery.Combinatorics.Erdos1213.erdos_1213_f_finite\n#print axioms LeanGallery.NumberTheory.Erdos1050.erdos_1050_irrational\n#print axioms LeanGallery.NumberTheory.Erdos1050.borwein_thm1_abs\n#print axioms LeanGallery.Combinatorics.Erdos880.erdos_880\n#print axioms LeanGallery.Combinatorics.Erdos880.erdos_880_order_two\n#print axioms LeanGallery.NumberTheory.Erdos482.graham_pollak\n#print axioms LeanGallery.NumberTheory.Erdos482.cor33_unconditional\n#print axioms LeanGallery.NumberTheory.Erdos482.General.erdos482_resolution\n' > axcheck.lean
-          lake env lean axcheck.lean 2>&1 | tee ax.out
+          echo "===== #print axioms (the point of truth) ====="
+          lake env lean scripts/AxiomCheck.lean 2>&1 | tee ax.out
+          echo "=============================================="
           # `#print axioms` wraps long qualified names across lines, so collapse all
           # whitespace before asserting — else a wrapped headline (e.g. the long-named
           # erdos482_resolution) splits "depends on axioms:" from its triple and would
@@ -36,4 +48,48 @@ jobs:
           if [ "$total" -lt 13 ] || [ "$total" -ne "$clean" ]; then
             echo "::error::a headline theorem has unexpected axioms or is missing (total=$total clean=$clean, want 13)"; cat ax.out; exit 1
           fi
-          rm -f axcheck.lean ax.out
+          rm -f ax.out
+
+  # ---- Docs: render + publish, LAST ----------------------------------------------------
+  # Kicked off only after the axiom gate is green (needs: axioms), and only on a push to the
+  # default branch (or a manual run) — PRs get the fast axiom check but skip the ~2h render.
+  # doc-gen4 renders the whole import closure (~1.3 GB, 99.6% Mathlib); trim-docs.py keeps
+  # only the gallery pages and relinks deps to the hosted Mathlib docs, so the site is a few MB.
+  docs:
+    needs: axioms
+    if: >
+      github.event_name == 'workflow_dispatch'
+      || (github.event_name == 'push'
+          && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'))
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: leanprover/lean-action@v1
+        with:
+          build: false          # we drive the doc build ourselves from docbuild/
+      - name: Build API docs (docbuild sub-project)
+        run: |
+          cd docbuild
+          lake exe cache get || true
+          lake build LeanGallery:docs
+      - name: Trim docs to gallery (relink deps to hosted mathlib4_docs)
+        run: python3 docbuild/trim-docs.py docbuild/.lake/build/doc LeanGallery
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docbuild/.lake/build/doc
+
+  # ---- Deploy to GitHub Pages (workflow mode, no gh-pages branch) -----------------------
+  # Separate job with the github-pages environment, so the deployment attaches to this commit
+  # (this is GitHub's + mathlib4_docs' recommended setup: actions/upload-pages-artifact +
+  # actions/deploy-pages, no branch-based build).
+  deploy:
+    needs: docs
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
