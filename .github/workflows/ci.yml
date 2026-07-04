@@ -49,6 +49,21 @@ jobs:
           if [ "$prints" -ne "$guards" ] || [ "$prints" -eq 0 ]; then
             echo "::error::AxiomCheck.lean malformed: need one #guard_msgs per #print axioms, ≥1 (prints=$prints guards=$guards)"; exit 1
           fi
+          # Visibility: the gate above is SILENT on success — `#guard_msgs` has no verbose mode.
+          # Its filter actions are `check` (assert + consume the message), `drop` (hide, no check),
+          # and `pass` (echo, no check); none both asserts *and* echoes. So the gate proves
+          # cleanliness but prints nothing. Echo the audited manifest here so the log shows WHAT was
+          # certified. The `info:` docstrings are exactly what the gate just confirmed the live
+          # `#print axioms` output equals, so this is an accurate summary (reached only on exit 0),
+          # not a second unchecked run.
+          echo "::notice::Axiom audit — $prints headline theorems certified [propext, Classical.choice, Quot.sound]"
+          echo "::group::Axiom audit — $prints headlines, each confirmed axiom-clean by the gate above"
+          grep -oE "'[^']+' depends on axioms: \[[^]]+\]" scripts/AxiomCheck.lean | cat -n
+          echo "::endgroup::"
+          { echo "### 🔒 Axiom audit: $prints headlines certified clean";
+            echo "All prove from the standard triple \`[propext, Classical.choice, Quot.sound]\` — no \`sorry\`, no custom axioms:";
+            grep '^#print axioms ' scripts/AxiomCheck.lean | sed 's|^#print axioms |- \`|; s|$|\`|';
+          } >> "$GITHUB_STEP_SUMMARY"
 
   # ---- Docs: render + publish, LAST ----------------------------------------------------
   # Kicked off only after the axiom gate is green (needs: axioms), and only on a push to the
