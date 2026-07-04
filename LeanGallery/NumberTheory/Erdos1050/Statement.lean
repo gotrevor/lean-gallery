@@ -14,14 +14,13 @@ import LeanGallery.NumberTheory.Erdos1050.Lemma3
 
 exactly as posed on erdosproblems.com (`Is ∑_{n=1}^∞ 1/(2ⁿ − 3) irrational?`, answer: yes).
 
-Formalised as `erdos_1050_literal : Irrational Sliteral`, where
-`Sliteral := ∑' n : ℕ, 1/(2^(n+1) − 3)`. Lean's `∑' n : ℕ` ranges over `n ≥ 0`, so the source's
-`n ≥ 1` sum is encoded by the standard reindex `n ↦ n + 1` (the tsum's `n = 0` summand is the
-source's first term, `1/(2¹ − 3)`). That `(n+1)` shift is the *only* thing to reconcile against the
-source, and it is transparent.
+Formalised as `erdos_1050 : Irrational (∑' n : ℕ, 1/(2^(n+1) − 3))`. Lean's `∑' n : ℕ` ranges over
+`n ≥ 0`, so the source's `n ≥ 1` sum is encoded by the standard reindex `n ↦ n + 1` (the tsum's
+`n = 0` summand is the source's first term, `1/(2¹ − 3)`). That `(n+1)` shift is the *only* thing to
+reconcile against the source, and it is transparent.
 
 **This file is the audit surface.** To check that this repository proves the *right thing*, read only
-this file: `Sliteral` and `erdos_1050_literal` are the entire trusted statement. Everything else
+this file: the theorem `erdos_1050` is the entire trusted statement. Everything else
 (`Basic.lean`, `Criterion.lean`, `Approximants.lean`, `Lemma3.lean`, …) is the proof engine.
 
 ## Provenance
@@ -41,9 +40,9 @@ this file: `Sliteral` and `erdos_1050_literal` are the entire trusted statement.
 * **Reduction (proved, not asserted).** The proof engine works with the positive-denominator tail
   `S = ∑_{n ≥ 0} 1/(2^(n+2) − 3)` (see `Basic.lean`); the headline reduces the literal series to it by
   `(∑_{n ≥ 1} 1/(2ⁿ − 3)) = -1 + S` — the single low term `1/(2¹−3) = -1` is rational, and
-  irrationality is invariant under adding a rational, so `erdos_1050_literal ↔ erdos_1050`. This
+  irrationality is invariant under adding a rational, so `erdos_1050 ↔ erdos_1050_irrational`. This
   equivalence is `Sliteral_eq`, proved below.
-* **Axiom footprint.** `#print axioms erdos_1050_literal` should end at
+* **Axiom footprint.** `#print axioms erdos_1050` should end at
   `[propext, Classical.choice, Quot.sound]` (kernel-pure; no `native_decide`, no custom axioms).
 -/
 
@@ -70,21 +69,24 @@ theorem Sliteral_eq : Sliteral = -1 + S := by
   simp only [Sliteral, S]
   rw [← hsplit]
 
-/-- **Erdős Problem #1050.** The series `∑_{n ≥ 1} 1/(2ⁿ − 3)` (literal form) is irrational. -/
-theorem erdos_1050_literal : Irrational Sliteral := by
+/-- **Erdős Problem #1050.** The series `∑_{n ≥ 1} 1/(2ⁿ − 3)` is irrational, exactly as posed on
+erdosproblems.com and encoded over `ℕ` by the reindex `n ↦ n + 1`. This is the trusted headline; its
+statement is character-for-character the one published to `formal-conjectures`. -/
+theorem erdos_1050 : Irrational (∑' n : ℕ, (1 : ℝ) / ((2 : ℝ) ^ (n + 1) - 3)) := by
+  show Irrational Sliteral
   rw [Sliteral_eq, show (-1 : ℝ) + S = S + ((-1 : ℚ) : ℝ) by push_cast; ring,
     irrational_add_ratCast_iff]
-  exact erdos_1050
+  exact erdos_1050_S
 
 /-- **Erdős Problem #1050** (positive-denominator tail form, used by the proof engine). -/
-theorem erdos_1050_irrational : Irrational S := erdos_1050
+theorem erdos_1050_irrational : Irrational S := erdos_1050_S
 
 /-! ### Non-vacuity anchors
 
 Executable evidence that the series computes as intended, so the irrationality claim is not an
 artifact of a mis-stated series. (The claim is already self-certifying against the worst failure
 mode: mathlib sets a non-summable `tsum` to `0`, and `Irrational 0` is false — so
-`erdos_1050_literal` is provable only because the series genuinely converges to a non-rational real,
+`erdos_1050` is provable only because the series genuinely converges to a non-rational real,
 never vacuously.) -/
 
 /-- Well-definedness: no term is a junk `1/0`, since the denominator `2ⁿ − 3` is never zero. -/

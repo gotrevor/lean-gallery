@@ -681,7 +681,7 @@ lemma Nh_int (n h : ℕ) (hn : 1 ≤ n) (hh1 : 1 ≤ h) (hhn : h ≤ n) :
 
 The integrality of the q-Lagrange combination `N_h = ∑_j muW n j ∏_{k=1}^{n−1}(1−q^{k+j−h})` — the
 last open input — is now **machine-checked** (`Nh_int`), via 2-adic (`Nh_2adic_int`) ∧ odd-denominator
-(`Nh_odd_int`) ⟹ `int_of_clearings`. So `Nh_integral` is a THEOREM and `erdos_1050` is axiom-clean. -/
+(`Nh_odd_int`) ⟹ `int_of_clearings`. So `Nh_integral` is a THEOREM and `erdos_1050_S` is axiom-clean. -/
 
 /-- **`N_h ∈ ℤ`, now a THEOREM** (was the last axiom). For each `n ≥ 1` there are integer witnesses
 `Nz h = N_h` (`1 ≤ h ≤ n`), assembled from the per-`(n,h)` integrality `Nh_int`. -/
@@ -729,7 +729,9 @@ theorem irrational_zB : Irrational zB := by
       cleared_error_tendsto.comp (Filter.tendsto_add_atTop_nat 1)
     exact hshift.congr (fun n => (hab (n + 1) (by omega)).symm)
 
-/-- **Erdős #1050.** The series `∑ 1/(2ⁿ − 3)` is irrational. -/
-theorem erdos_1050 : Irrational S := irrational_S_iff_zB.mpr irrational_zB
+/-- **Erdős #1050**, positive-denominator tail form: the engine's series `S = ∑_{n ≥ 0} 1/(2^(n+2) − 3)`
+is irrational. The literal, as-posed headline `erdos_1050 : Irrational (∑' n, 1/(2^(n+1) − 3))` is
+derived from this in `Statement.lean` (they differ by the single rational term `1/(2¹ − 3) = −1`). -/
+theorem erdos_1050_S : Irrational S := irrational_S_iff_zB.mpr irrational_zB
 
 end LeanGallery.NumberTheory.Erdos1050

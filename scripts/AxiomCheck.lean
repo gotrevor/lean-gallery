@@ -28,7 +28,8 @@ consume their messages, so a clean run is silent:
 CI (`.github/workflows/ci.yml`, job `axioms`) runs exactly that and gates everything
 downstream on the exit code. To add a headline theorem: add its `Statement` import above
 and a guarded `#print axioms` block below (copy the printed triple into the expected
-`info:` line), then bump the block count in the workflow's gate. The guards use
+`info:` line). This file is the single source of truth for the headline set — the workflow
+only checks it is well-formed (one guard per print), so there is no count to bump. The guards use
 `whitespace := lax` so a long qualified name that the pretty-printer wraps across lines
 still matches the single-line expected triple.
 -/
@@ -58,6 +59,10 @@ still matches the single-line expected triple.
 /-- info: 'LeanGallery.Combinatorics.Erdos1213.erdos_1213_f_finite' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms LeanGallery.Combinatorics.Erdos1213.erdos_1213_f_finite
+
+/-- info: 'LeanGallery.NumberTheory.Erdos1050.erdos_1050' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms LeanGallery.NumberTheory.Erdos1050.erdos_1050
 
 /-- info: 'LeanGallery.NumberTheory.Erdos1050.erdos_1050_irrational' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in

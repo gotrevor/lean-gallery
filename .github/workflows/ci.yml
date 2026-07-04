@@ -32,19 +32,22 @@ jobs:
       # `#print axioms` per headline). Each print is wrapped in `#guard_msgs` asserting the
       # standard triple `[propext, Classical.choice, Quot.sound]`, so any drift (a new axiom,
       # a `sorry`/`sorryAx`, or a renamed/removed theorem) makes the file fail to elaborate —
-      # the exit code IS the gate. Edit the audit file to add/remove a headline; bump the
-      # expected count (13) below to match.
+      # the exit code IS the gate. Add/remove a headline by editing the audit file only; the
+      # well-formedness check below has no count to keep in sync.
       - name: Axiom-clean gate (reference point of truth)
         run: |
           # A clean run is SILENT (the guards consume their messages); axiom drift makes
           # this exit non-zero. No output parsing — the exit code is the gate.
           lake env lean scripts/AxiomCheck.lean
-          # Belt-and-suspenders: catch a silently-dropped headline. Every audited theorem
-          # keeps a guarded block, so #print-axioms lines == #guard_msgs lines == 13.
+          # Belt-and-suspenders: the audit file is the single source of truth for the set of
+          # headlines, so don't duplicate its size here. Assert only that it's well-formed —
+          # every `#print axioms` has a matching `#guard_msgs` guard (an orphaned print would
+          # slip axiom drift past the gate) and the gate isn't empty. Adding/removing a headline
+          # needs no edit here.
           prints=$(grep -c '^#print axioms ' scripts/AxiomCheck.lean)
           guards=$(grep -c '^#guard_msgs (whitespace := lax) in$' scripts/AxiomCheck.lean)
-          if [ "$prints" -ne 13 ] || [ "$guards" -ne 13 ]; then
-            echo "::error::expected 13 guarded #print axioms blocks (found prints=$prints guards=$guards)"; exit 1
+          if [ "$prints" -ne "$guards" ] || [ "$prints" -eq 0 ]; then
+            echo "::error::AxiomCheck.lean malformed: need one #guard_msgs per #print axioms, ≥1 (prints=$prints guards=$guards)"; exit 1
           fi
 
   # ---- Docs: render + publish, LAST ----------------------------------------------------
