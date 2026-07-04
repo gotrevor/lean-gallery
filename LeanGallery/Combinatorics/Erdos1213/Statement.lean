@@ -38,7 +38,7 @@ a s  <  (a 1 + K/2)·e^(K+1) + K·e^(2K+2).
 In particular no such "all block-sums distinct" sequence can be arbitrarily long.
 
 Sanity anchors from the paper (largest achievable last term `f(a,K)`): `f(1,1)=2`, `f(2,1)=4`,
-`f(1,2)=7`, `f(2,2)=10` (the bound is correct but loose — e.g. it only asserts `f(1,1) < 65.7`).
+`f(1,2)=7`, `f(2,2)=8` (the bound is correct but loose — e.g. it only asserts `f(1,1) < 65.7`).
 
 This is `hegyvari_thm3` with the bound written out; the proof just unfolds `hegyvariBound`. -/
 theorem erdos_1213 (a : ℕ → ℕ) (s K : ℕ) (hK : 1 ≤ K) (hs : 1 ≤ s)
