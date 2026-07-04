@@ -18,6 +18,17 @@ They are **not** authoritative. The source, the `#print axioms` output, and a gr
 
 - `handoff/HANDOFF.md` — completion note for the Kirby–Paris hydra entry (design decisions).
 - `handoff/HANDOFF-2026-06-26-0222.md` — the timestamped session checkpoint (gotchas, key files).
+- `handoff/HANDOFF-erdos-ports-2026-06-28.md` — completion note for porting Erdős #1050/#880/#482
+  into the gallery (what landed, which axiom-tainted subtrees were excluded).
+- `handoff/HANDOFF-2026-06-28-1619.md` — the timestamped checkpoint of that Erdős-ports session.
+
+## `spec/`
+
+**Build briefs** — the tightly-scoped specs a host session hands to a sandboxed agent to build one
+gallery entry. The counterpart to the handoffs above: the spec goes *in*, the handoff comes *out*.
+
+- `spec/HYDRA-TERMINATION-SPEC.md` — the brief that produced the Kirby–Paris hydra entry (mirror the
+  Goodstein layout, termination-only, independence-from-PA explicitly out of scope).
 
 Best case: you improve on the pattern, or learn something from it. Worst case: you
 decide it's noise. Either's fine. 🌱
