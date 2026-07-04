@@ -19,7 +19,7 @@ promoted in here.
 | `Logic/Hydra` | **Kirby–Paris 1982** — Hercules always wins: every hydra dies (`hydra_terminates` — every battle reaches `leaf`). Faithful chop-a-head-regrow-at-the-grandparent move on finite rooted trees; the ε₀ Kirby–Paris ordinal `♯ ωᵒ⁽ᶜ⁾`, realized as a recursive multiset (path) order on `Mathlib/Logic/Hydra.lean`'s `CutExpand`; strict descent + well-foundedness. | ✅ axiom-clean |
 | `NumberTheory/Erdos403` | **Erdős #403** (Frankl / Shen Lin 1976, both unpublished) — only finitely many powers of two are sums of distinct factorials (`erdos_403_finite`), and the largest is `2⁷ = 2! + 3! + 5! = 128` (`erdos_403_sharp`, `m ≤ 7`). Reconstruction via the factorial number system: a sum of distinct factorials is a factorial-base numeral with all digits `≤ 1`, and every `2^m` (`m ≥ 8`) carries a digit `≥ 2` — a fixed-modulus `12!` check, kernel-pure (no `native_decide`). | ✅ axiom-clean |
 | `Combinatorics/Erdos1213` | **Erdős #1213 / Hegyvári Thm 3** (Hegyvári 1986) — a strictly increasing sequence with consecutive gaps `≤ K` whose consecutive-block sums are all distinct has last term `< (a₁+K/2)·e^(K+1) + K·e^(2K+2)` (`erdos_1213`); hence `f(a,K)` is finite (`erdos_1213_f_finite`). First known formalization. | ✅ axiom-clean |
-| `NumberTheory/Erdos1050` | **Erdős #1050** (Borwein 1991/92) — the series `∑ 1/(2ⁿ−3)` is irrational (`erdos_1050_irrational`), via Borwein's irrationality criterion for `∑ 1/(qⁿ+r)` specialized to `q=2, r=−3`. The general engine also proves **Borwein's Theorem 1** fully axiom-free — `∑ 1/(qⁿ+c)` is irrational for any integer base of magnitude `≥ 2` and any nonzero rational `c` (`borwein_thm1_abs`), discharging the `borwein_approximants` axiom. | ✅ axiom-clean |
+| `NumberTheory/Erdos1050` | **Erdős #1050** (Borwein 1991/92) — the series `∑_{n≥1} 1/(2ⁿ−3)` is irrational (`erdos_1050_literal`), via Borwein's irrationality criterion for `∑ 1/(qⁿ+r)` specialized to `q=2, r=−3`. The general engine also proves **Borwein's Theorem 1** fully axiom-free — `∑ 1/(qⁿ+c)` is irrational for any integer base of magnitude `≥ 2` and any nonzero rational `c` (`borwein_thm1_abs`), discharging the `borwein_approximants` axiom. | ✅ axiom-clean |
 | `Combinatorics/Erdos880` | **Erdős #880** (Hegyvári–Hennecart–Plagne 2007) — for an additive basis `A` of order `k`, are the gaps of its restricted-sum set (sums of `≤ k` distinct elements) bounded? **Yes for `k = 2`** (`erdos_880_order_two`, gaps eventually `≤ 2`); **no for `k ≥ 3`** (`erdos_880`: an explicit order-`h` basis with arbitrarily long gaps). Includes the faithful `Δ = limsup`-gap restatements and the HHP07 Theorem 3/4/8/9 companions; an in-library `AxiomGuard` build-checks `#print axioms` for ~25 theorems. | ✅ axiom-clean |
 | `NumberTheory/Erdos482` | **Erdős #482 / Graham–Pollak** (Stoll) — the recurrence `u(0)=1, u(n+1)=⌊√2·(uₙ+½)⌋` reads off the binary expansion of `√2`: the difference `u(2n+1) − 2·u(2n−1)` is the `n`-th binary digit of `√2` (`graham_pollak`). Resolved in **full generality** (`erdos482_resolution`): for every real `w > 0` and base `g ≥ 2`, an explicit Graham–Pollak-type recurrence reads the base-`g` digits of `w`. Includes Stoll's `759250125·√2` showcase constant (`cor33_unconditional`) and the St06 digit-frontier family. | ✅ axiom-clean |
 
@@ -63,9 +63,12 @@ For Erdős #1213:
 
 For Erdős #1050:
 
-- `LeanGallery/NumberTheory/Erdos1050/Statement.lean` — the **headline** `erdos_1050_irrational`
-  (`Irrational S`), with the series and the index convention spelled out. To audit, also read the
-  one-line `S` in `Basic.lean`. Read against the erdosproblems.com #1050 statement (Borwein 1991/92).
+- `LeanGallery/NumberTheory/Erdos1050/Statement.lean` — the **headline** `erdos_1050_literal`
+  (`Irrational Sliteral`), stating the source's 1-based series `∑_{n≥1} 1/(2ⁿ−3)` verbatim (encoded
+  over `ℕ` by the reindex `n ↦ n+1`). `Sliteral` and `erdos_1050_literal` are the entire trusted
+  statement — read them against the erdosproblems.com #1050 statement (Borwein 1991/92). The engine's
+  positive-denominator tail form `Irrational S` (`erdos_1050_irrational`, with `S` defined in one line
+  in `Basic.lean`) is the internal shape the proof actually runs on.
 
 For Erdős #880:
 
