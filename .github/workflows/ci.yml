@@ -23,7 +23,7 @@ jobs:
   # repo prove the right thing, honestly" gate. Fast (~3 min on cached Mathlib oleans) and it
   # gates everything downstream — docs don't render or publish unless this is green.
   axioms:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@v4
       # elan + `lake exe cache get` (prebuilt Mathlib oleans) + `lake build`.
@@ -76,7 +76,7 @@ jobs:
       github.event_name == 'workflow_dispatch'
       || (github.event_name == 'push'
           && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'))
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@v4
       - uses: leanprover/lean-action@v1
@@ -100,7 +100,7 @@ jobs:
   # actions/deploy-pages, no branch-based build).
   deploy:
     needs: docs
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
