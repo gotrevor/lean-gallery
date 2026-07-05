@@ -1,2 +1,5 @@
 /.lake
 /docbuild/.lake
+
+# Paper PDFs stay out of this public repo (summaries/citations only; see archive/papers/*/README.md)
+archive/papers/**/*.pdf

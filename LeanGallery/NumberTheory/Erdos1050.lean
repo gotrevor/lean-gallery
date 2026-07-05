@@ -11,6 +11,7 @@ import LeanGallery.NumberTheory.Erdos1050.Pade
 import LeanGallery.NumberTheory.Erdos1050.Residue
 import LeanGallery.NumberTheory.Erdos1050.Integrality
 import LeanGallery.NumberTheory.Erdos1050.Lemma3
+import LeanGallery.NumberTheory.Erdos1050.Lambert
 import LeanGallery.NumberTheory.Erdos1050.Statement
 import LeanGallery.NumberTheory.Erdos1050.General
 import LeanGallery.NumberTheory.Erdos1050.GeneralNumerator
