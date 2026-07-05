@@ -18,5 +18,6 @@ import LeanGallery.NumberTheory.Erdos1050.GeneralResidue
 import LeanGallery.NumberTheory.Erdos1050.GeneralLemma3
 import LeanGallery.NumberTheory.Erdos1050.GeneralError
 import LeanGallery.NumberTheory.Erdos1050.GeneralAssembly
+import LeanGallery.NumberTheory.Erdos1050.Variants
 
 /-! # `LeanGallery.NumberTheory.Erdos1050` (umbrella import) -/
