@@ -72,6 +72,14 @@ still matches the single-line expected triple.
 #guard_msgs (whitespace := lax) in
 #print axioms LeanGallery.NumberTheory.Erdos1050.borwein_thm1_abs
 
+/-- info: 'LeanGallery.NumberTheory.Erdos1050.erdos_1050_lambert' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms LeanGallery.NumberTheory.Erdos1050.erdos_1050_lambert
+
+/-- info: 'LeanGallery.NumberTheory.Erdos1050.erdos_1050_borwein_general' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms LeanGallery.NumberTheory.Erdos1050.erdos_1050_borwein_general
+
 /-- info: 'LeanGallery.Combinatorics.Erdos880.erdos_880' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms LeanGallery.Combinatorics.Erdos880.erdos_880
