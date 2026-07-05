@@ -72,13 +72,29 @@ still matches the single-line expected triple.
 #guard_msgs (whitespace := lax) in
 #print axioms LeanGallery.NumberTheory.Erdos1050.borwein_thm1_abs
 
-/-- info: 'LeanGallery.NumberTheory.Erdos1050.erdos_1050_lambert' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'LeanGallery.NumberTheory.Erdos1050.erdos_1050.variants.two_pow_sub_one' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms LeanGallery.NumberTheory.Erdos1050.erdos_1050_lambert
+#print axioms LeanGallery.NumberTheory.Erdos1050.erdos_1050.variants.two_pow_sub_one
+
+/-- info: 'LeanGallery.NumberTheory.Erdos1050.erdos_1050.variants.two_pow_sub_one.eq_divisor_count_series' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms LeanGallery.NumberTheory.Erdos1050.erdos_1050.variants.two_pow_sub_one.eq_divisor_count_series
+
+/-- info: 'LeanGallery.NumberTheory.Erdos1050.erdos_1050.variants.two_pow_sub_one.divisor_count_series_irrational' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms LeanGallery.NumberTheory.Erdos1050.erdos_1050.variants.two_pow_sub_one.divisor_count_series_irrational
 
 /-- info: 'LeanGallery.NumberTheory.Erdos1050.erdos_1050_borwein_general' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms LeanGallery.NumberTheory.Erdos1050.erdos_1050_borwein_general
+
+/-- info: 'LeanGallery.NumberTheory.Erdos1050.erdos_1050.variants.borwein' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms LeanGallery.NumberTheory.Erdos1050.erdos_1050.variants.borwein
+
+/-- info: 'LeanGallery.NumberTheory.Erdos1050.erdos_1050.variants.transcendental.implies_erdos_1050' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms LeanGallery.NumberTheory.Erdos1050.erdos_1050.variants.transcendental.implies_erdos_1050
 
 /-- info: 'LeanGallery.Combinatorics.Erdos880.erdos_880' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
