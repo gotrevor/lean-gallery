@@ -3,7 +3,17 @@ Copyright (c) 2026 Trevor Morris. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Trevor Morris
 -/
-import Mathlib.Data.Nat.Log
+-- `import Mathlib` (not the narrower `Mathlib.Data.Nat.Log`) is load-bearing, not laziness.
+--
+-- Instance resolution depends on what is imported. Under the narrow import, the `b ^ e` in `bump`
+-- elaborates with **core's** `instPowNat`; under full Mathlib it elaborates with **Mathlib's**
+-- `Monoid.toPow`. The two are defeq, so nothing here notices — but they are *different terms*, and
+-- `Comparator/Goodstein/Challenge.lean` must import Mathlib (that is the whole point of a challenge
+-- file). A challenge cannot reproduce a constant that was elaborated in a smaller instance
+-- environment, so comparator rejected `bump` as a mismatch until this import matched.
+--
+-- The rest of the gallery already imports Mathlib wholesale; Goodstein was the outlier.
+import Mathlib
 
 /-!
 # Goodstein's theorem

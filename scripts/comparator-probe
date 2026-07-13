@@ -61,6 +61,19 @@ partial def constClosure (seen : NameSet) (todo : List Name) : MetaM NameSet := 
         let more := (fromType ++ fromVal).filter keep
         constClosure (seen.insert n) (rest ++ more)
 
+/-- Render an `Expr` the way comparator compares it: STRUCTURALLY.
+
+`ppExpr` is a liar for this purpose -- it hides implicit arguments, universe levels and proof terms,
+so two genuinely different constants (e.g. two well-founded definitions carrying different
+termination proofs) pretty-print identically and diff clean. Comparator compares full `ConstantInfo`s,
+so we dump the raw expression plus its structural hash. -/
+def render (e : Expr) : MetaM String := do
+  let pp ← withOptions (fun o =>
+      (((o.setBool `pp.all true).setBool `pp.universes true).setBool `pp.explicit true).setBool
+        `pp.proofs true)
+    (do return (← ppExpr e).pretty)
+  return s!"hash={{e.hash}} {{pp}}"
+
 def probe (names : List Name) : MetaM Unit := do
   for n in names do
     let env ← getEnv
@@ -68,20 +81,20 @@ def probe (names : List Name) : MetaM Unit := do
     | none => IO.println s!"MISSING THEOREM {{n}}"
     | some ci =>
       IO.println s!"THEOREM {{n}}"
-      IO.println s!"  type: {{← ppExpr ci.type}}"
+      IO.println s!"  type: {{← render ci.type}}"
       -- comparator seeds its worklist from the *type*'s used constants; mirror that exactly.
       let seeds := ci.type.getUsedConstants.toList.filter keep
       let cl ← constClosure (NameSet.empty) seeds
       let sorted := (cl.toList.map (fun c => (c.toString, c))).toArray.qsort
         (fun a b => a.1 < b.1)
-      for (_, c) in sorted do
+      for c in sorted.map Prod.snd do
         match env.find? c with
         | none => IO.println s!"  CONST {{c}} :: MISSING"
         | some cci =>
-          IO.println s!"  CONST {{c}}"
-          IO.println s!"    type:  {{← ppExpr cci.type}}"
+          IO.println s!"  CONST {{c}}  levels={{cci.levelParams}}"
+          IO.println s!"    type:  {{← render cci.type}}"
           match cci.value? with
-          | some v => IO.println s!"    value: {{← ppExpr v}}"
+          | some v => IO.println s!"    value: {{← render v}}"
           | none   => IO.println s!"    value: <none>"
 
 end CmpProbe
