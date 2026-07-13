@@ -21,6 +21,12 @@ permissions:
   pages: write        # actions/deploy-pages publishes to the github-pages environment
   id-token: write     # OIDC token deploy-pages authenticates with
 
+# Runner image: pinned (not `-latest`, which floats) to the GA LTS image. Specifically NOT
+# ubuntu-26.04: that image is still a preview (actions/runner-images#14226) and the docs job
+# deterministically OOM'd on it — every main push July 4–13 died at ~9.1k/17.6k doc-gen4
+# targets with "resource exhausted (error code: 12, cannot allocate memory)", while the
+# byte-identical build was green on 24.04 (2h, well-behaved). doc-gen4's peak sits right at
+# the runner's 16 GB; the 24.04 image's swap absorbs it. Revisit 26.04 once it's GA.
 jobs:
   # ---- Reference point of truth --------------------------------------------------------
   # Build the library, then #print axioms for every headline theorem and assert each is the
@@ -28,7 +34,7 @@ jobs:
   # repo prove the right thing, honestly" gate. Fast (~3 min on cached Mathlib oleans) and it
   # gates everything downstream — docs don't render or publish unless this is green.
   axioms:
-    runs-on: ubuntu-26.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       # elan + `lake exe cache get` (prebuilt Mathlib oleans) + `lake build`.
@@ -81,12 +87,26 @@ jobs:
       github.event_name == 'workflow_dispatch'
       || (github.event_name == 'push'
           && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'))
-    runs-on: ubuntu-26.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: leanprover/lean-action@v1
         with:
           build: false          # we drive the doc build ourselves from docbuild/
+      # doc-gen4's peak memory sits right at the standard runner's 16 GB; the margin that
+      # keeps it alive is swap, and how much swap a runner image ships is an image detail
+      # that has changed under us before (the 26.04 preview image OOM'd this job — see the
+      # pin note above jobs:). Provide our own headroom instead of inheriting the image's,
+      # and log the water line so a future OOM investigation has before-numbers in the log.
+      - name: Add 8 GB swap (doc-gen4 headroom)
+        run: |
+          SWAP=/mnt/swapfile-docs
+          sudo fallocate -l 8G "$SWAP" 2>/dev/null || { SWAP=/swapfile-docs; sudo fallocate -l 8G "$SWAP"; }
+          sudo chmod 600 "$SWAP"
+          sudo mkswap "$SWAP"
+          sudo swapon "$SWAP"
+          swapon --show
+          free -h
       - name: Build API docs (docbuild sub-project)
         run: |
           cd docbuild
@@ -105,7 +125,7 @@ jobs:
   # actions/deploy-pages, no branch-based build).
   deploy:
     needs: docs
-    runs-on: ubuntu-26.04
+    runs-on: ubuntu-24.04
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
