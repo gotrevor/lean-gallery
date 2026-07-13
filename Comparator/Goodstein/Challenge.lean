@@ -23,6 +23,21 @@ additional oversight"). Every definition below carries its real body, so it is c
 strict statement-identity check instead. For Goodstein the definitions *are* the whole audit: the
 theorem `∃ N, G N = 0` is worthless unless `goodsteinSeq` really is Goodstein's sequence.
 
+## Why the `LeanGallery.Logic.Goodstein` namespace
+
+This file re-derives the gallery's constants **under their own fully-qualified names**, from scratch,
+against Mathlib alone — it still imports nothing from the gallery, and everything below is written
+out in full and auditable on its own terms. `Solution.lean` then imports the real development and
+declares **nothing**: the names line up, and comparator's job is to check that the two sets of
+declarations are *identical*.
+
+That is not a cosmetic choice. `bump` is defined by well-founded recursion, which Lean marks
+**irreducible**, so a copy under a fresh namespace would *not* be interchangeable with the gallery's
+by `rfl` — the solution would have to carry a hand-written propositional bridge (`bump_eq` by strong
+induction, and so on) just to connect them. That is unaudited glue sitting directly on the trust
+path, buying nothing. With the real names, the certificate is about the gallery's **genuine**
+`goodsteinSeq` and `goodstein_terminates`, with zero glue in the middle.
+
 ## The construction (Goodstein 1944)
 
 For a base `b ≥ 2`, the *hereditary base-`b`* representation of `n` writes `n` in base `b`, then
@@ -57,9 +72,10 @@ That risk is closed by inlining `bump`/`goodsteinSeq` with their real bodies abo
 
 The gallery additionally pins the definition with machine-computed ground-truth trajectories
 (`goodsteinSeq 4 1 = 26`, `goodsteinSeq 4 2 = 41`, …) in `LeanGallery/Logic/Goodstein/Basic.lean`.
-Those are discharged by `native_decide`, which adds the axiom `Lean.ofReduceBool` — outside this
-pair's whitelist — so they deliberately do **not** cross into the comparator surface, which stays
-axiom-strict. Check them there; check the definition bodies here.
+Those are discharged by `decide +kernel` — kernel reduction and nothing else — so they rest on
+exactly this pair's whitelist (`propext`, `Classical.choice`, `Quot.sound`, all entering via
+`bump`'s termination proof) and add nothing further. In particular they do **not** appeal to the
+compiler the way `native_decide` would. Check them there; check the definition bodies here.
 
 ## References
 * R. L. Goodstein, *On the restricted ordinal theorem*, Journal of Symbolic Logic **9** (1944),
@@ -69,7 +85,7 @@ axiom-strict. Check them there; check the definition bodies here.
 -- `sorry` is the point of a challenge file; the repo builds with warnings-as-errors.
 set_option warningAsError false
 
-namespace Goodstein
+namespace LeanGallery.Logic.Goodstein
 
 /-- The base used to read `G k` at step `k` of a Goodstein sequence: `base k = k + 2`
 (so `G 0` is read in base 2, the first bump sends `2 ↦ 3`, and so on). -/
@@ -103,4 +119,4 @@ def goodsteinSeq (m : ℕ) : ℕ → ℕ
 at `m` eventually reaches `0`. -/
 theorem goodstein_terminates (m : ℕ) : ∃ N, goodsteinSeq m N = 0 := sorry
 
-end Goodstein
+end LeanGallery.Logic.Goodstein
