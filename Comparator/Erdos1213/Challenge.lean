@@ -22,6 +22,16 @@ type and universe, which is a gameable surface (its own README: a hole "can be g
 additional oversight"). Every definition below carries its real body, so it is covered by the
 strict statement-identity check instead.
 
+## Why the `LeanGallery.Combinatorics.Erdos1213` namespace
+
+This file re-derives the gallery's constants **under their own fully-qualified names**, from Mathlib
+alone — it imports nothing from the gallery, and everything below is written out in full and
+auditable on its own terms. `Solution.lean` then imports the real development and declares no
+definitions at all. Comparator compares this file's `LeanGallery.Combinatorics.Erdos1213.*` against
+the *real* ones and fails unless they are the same declarations, so the certificate is about the
+gallery's **genuine** `hegyvariF` and `erdos_1213` — not a namespace-local clone bridged back by
+glue code that would itself need auditing.
+
 ## The problem
 
 Erdős #1213 asks after Hegyvári's `f(a, K)`: take strictly increasing positive integers
@@ -44,18 +54,18 @@ Theorem 3 (DOI 10.1007/BF01949064). Problem page: <https://www.erdosproblems.com
 * Three **non-vacuity / faithfulness anchors**, which is what keeps the two bounds above from being
   cheap. A bound `a_s < L` is worthless if `AllCSumsDistinct` is unsatisfiable, and `f ≤ L` is
   worthless if the supremum is taken over the empty set (`sSup ∅ = 0` in `ℕ`). So:
-  - `erdos_1213_anchor_valid` — `[1, 2]` really *is* all-block-sums-distinct (the hypothesis of
+  - `anchor_valid` — `[1, 2]` really *is* all-block-sums-distinct (the hypothesis of
     `erdos_1213` is satisfiable);
-  - `erdos_1213_anchor_collision` — `[1, 2, 3]` really is *not* (the predicate has teeth: it is not
+  - `anchor_collision` — `[1, 2, 3]` really is *not* (the predicate has teeth: it is not
     vacuously true, e.g. `a₁ + a₂ = 3 = a₃`);
-  - `erdos_1213_f_lower` — `f(1, 1) ≥ 2`, so the supremum in `erdos_1213_f_finite` is over a
-    nonempty set and is not the degenerate `sSup ∅ = 0`.
+  - `hegyvariF_ge_1_1` — `f(1, 1) ≥ 2`, so the supremum in `erdos_1213_f_finite` is over a
+    nonempty set and is not the degenerate `sSup ∅ = 0`. (This is the gallery's own name for it.)
 -/
 
 -- `sorry` is the point of a challenge file; the repo builds with warnings-as-errors.
 set_option warningAsError false
 
-namespace Erdos1213
+namespace LeanGallery.Combinatorics.Erdos1213
 open Finset
 
 /-- The "consecutive sum" (c-sum) of `a` over the index block `u..v` (1-based, `u ≤ v`). -/
@@ -117,15 +127,15 @@ theorem erdos_1213_f_finite (init K : ℕ) (hK : 1 ≤ K) (ha : 1 ≤ init) :
 (`a₁ = 1`, `a₂ = 2`, `a₁ + a₂ = 3`). This is the witness behind the paper's `f(1,1) = 2`.
 
 Without it, `erdos_1213` could be satisfied by a theory in which `AllCSumsDistinct` is never true. -/
-theorem erdos_1213_anchor_valid : AllCSumsDistinct (seqOf [1, 2]) 2 := sorry
+theorem anchor_valid : AllCSumsDistinct (seqOf [1, 2]) 2 := sorry
 
 /-- **Faithfulness anchor (negative).** `AllCSumsDistinct` is a real constraint, not a predicate that
 everything satisfies: extending the witness above by one step to `[1, 2, 3]` collides, because the
 block `(1,2)` and the block `(3,3)` share the c-sum `1 + 2 = 3 = a₃`.
 
-Together with `erdos_1213_anchor_valid` this pins the predicate from both sides: satisfiable, and not
+Together with `anchor_valid` this pins the predicate from both sides: satisfiable, and not
 trivially true. -/
-theorem erdos_1213_anchor_collision : ¬ AllCSumsDistinct (seqOf [1, 2, 3]) 3 := sorry
+theorem anchor_collision : ¬ AllCSumsDistinct (seqOf [1, 2, 3]) 3 := sorry
 
 /-- **Non-vacuity anchor for the supremum.** `f(1,1) ≥ 2`, certified by the witness `[1, 2]` above.
 
@@ -133,6 +143,6 @@ In `ℕ`, `sSup ∅ = 0`, so `erdos_1213_f_finite` would hold vacuously if `vali
 This anchor rules that out: the supremum is taken over a nonempty set of genuinely achievable last
 terms. (The paper's exact value is `f(1,1) = 2`, so this is sharp; the upper bound `L` from
 `erdos_1213_f_finite` is correct but loose — it only asserts `f(1,1) < 65.7`.) -/
-theorem erdos_1213_f_lower : 2 ≤ hegyvariF 1 1 := sorry
+theorem hegyvariF_ge_1_1 : 2 ≤ hegyvariF 1 1 := sorry
 
-end Erdos1213
+end LeanGallery.Combinatorics.Erdos1213

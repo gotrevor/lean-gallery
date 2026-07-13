@@ -2,7 +2,7 @@
   "challenge_module": "Comparator.Goodstein.Challenge",
   "solution_module": "Comparator.Goodstein.Solution",
   "theorem_names": [
-    "Goodstein.goodstein_terminates"
+    "LeanGallery.Logic.Goodstein.goodstein_terminates"
   ],
   "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"],
   "enable_nanoda": true

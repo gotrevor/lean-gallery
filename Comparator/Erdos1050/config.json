@@ -2,15 +2,15 @@
   "challenge_module": "Comparator.Erdos1050.Challenge",
   "solution_module": "Comparator.Erdos1050.Solution",
   "theorem_names": [
-    "Erdos1050.erdos_1050",
-    "Erdos1050.erdos_1050_irrational",
-    "Erdos1050.borwein_thm1_abs",
-    "Erdos1050.erdos_1050_borwein_general",
-    "Erdos1050.erdos_1050.variants.two_pow_sub_one",
-    "Erdos1050.erdos_1050.variants.two_pow_sub_one.eq_divisor_count_series",
-    "Erdos1050.erdos_1050.variants.two_pow_sub_one.divisor_count_series_irrational",
-    "Erdos1050.erdos_1050.variants.borwein",
-    "Erdos1050.erdos_1050.variants.transcendental.implies_erdos_1050"
+    "LeanGallery.NumberTheory.Erdos1050.erdos_1050",
+    "LeanGallery.NumberTheory.Erdos1050.erdos_1050_irrational",
+    "LeanGallery.NumberTheory.Erdos1050.borwein_thm1_abs",
+    "LeanGallery.NumberTheory.Erdos1050.erdos_1050_borwein_general",
+    "LeanGallery.NumberTheory.Erdos1050.erdos_1050.variants.two_pow_sub_one",
+    "LeanGallery.NumberTheory.Erdos1050.erdos_1050.variants.two_pow_sub_one.eq_divisor_count_series",
+    "LeanGallery.NumberTheory.Erdos1050.erdos_1050.variants.two_pow_sub_one.divisor_count_series_irrational",
+    "LeanGallery.NumberTheory.Erdos1050.erdos_1050.variants.borwein",
+    "LeanGallery.NumberTheory.Erdos1050.erdos_1050.variants.transcendental.implies_erdos_1050"
   ],
   "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"],
   "enable_nanoda": true

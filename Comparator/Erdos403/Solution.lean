@@ -8,30 +8,18 @@ import LeanGallery.NumberTheory.Erdos403.Statement
 /-!
 # Erdős #403 — comparator SOLUTION
 
-Discharges every `sorry` in `Challenge.lean` by delegating to the real development. The definitions
-are repeated **verbatim** from the challenge (comparator requires that every declaration appearing
-in a statement be identical in both environments), and each theorem is closed by the corresponding
-gallery result.
+Discharges the `sorry`s in `Challenge.lean` by bringing the real development into scope. This file
+declares **nothing**.
 
-This file is *not* part of the audit surface — `Challenge.lean` is. Comparator's job is to prove
-that whatever happens in here really did establish the challenge's statements.
+`Challenge.lean` re-derives `factSum`, `erdos_403_sharp`, `erdos_403_finite` and `witness` under
+their real fully-qualified names from Mathlib alone. Importing `Statement` here (which pulls in
+`Basic` — hence `factSum` and `witness` — and `Engine`, which proves the headlines) populates this
+environment with constants of exactly those names. Comparator then checks that the two are the
+*same declarations*, replays the gallery's proofs through the Lean kernel and nanoda, and rejects
+any axiom outside `propext` / `Quot.sound` / `Classical.choice`.
+
+Nothing is bridged, transported or re-proved here: the certificate is about the gallery's genuine
+`erdos_403_finite`, not a namespace-local clone of it.
+
+This file is *not* part of the audit surface. `Challenge.lean` is.
 -/
-
-open scoped Nat
-
-namespace Erdos403
-
-/-- Verbatim from `Challenge.lean` — comparator checks the two are the same declaration. -/
-def factSum (S : Finset ℕ) : ℕ := ∑ a ∈ S, a !
-
-theorem erdos_403_finite :
-    {S : Finset ℕ | ∃ m : ℕ, factSum S = 2 ^ m}.Finite :=
-  LeanGallery.NumberTheory.Erdos403.erdos_403_finite
-
-theorem erdos_403_sharp {S : Finset ℕ} {m : ℕ} (h : factSum S = 2 ^ m) : m ≤ 7 :=
-  LeanGallery.NumberTheory.Erdos403.erdos_403_sharp h
-
-theorem erdos_403_witness : factSum {2, 3, 5} = 2 ^ 7 :=
-  LeanGallery.NumberTheory.Erdos403.witness
-
-end Erdos403

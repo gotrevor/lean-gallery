@@ -54,12 +54,22 @@ deliberately-`sorry`ed mirror of the `formal-conjectures` statement, pinned by `
 excluded from `scripts/AxiomCheck.lean`. It is excluded here too: a challenge may contain only
 statements the solution actually **proves**. What *is* included is the proved implication above,
 which takes that conjecture as a hypothesis and therefore asserts nothing about its truth.
+
+## Why the `LeanGallery.NumberTheory.Erdos1050` namespace
+
+This file re-derives the gallery's constants **under their own fully-qualified names**, from Mathlib
+alone — it imports nothing from the gallery, and everything below is written out in full and
+auditable on its own terms. `Solution.lean` then imports the real development and declares
+**nothing**. Comparator compares this file's `LeanGallery.NumberTheory.Erdos1050.*` against the
+*real* ones and fails unless they are the same declarations, so the certificate is about the
+gallery's **genuine** `S` and `erdos_1050` — not a namespace-local clone bridged back by glue code
+that would itself need auditing.
 -/
 
 -- `sorry` is the point of a challenge file; the repo builds with warnings-as-errors.
 set_option warningAsError false
 
-namespace Erdos1050
+namespace LeanGallery.NumberTheory.Erdos1050
 
 /-- The positive-denominator tail `∑_{n ≥ 0} 1/(2^(n+2) − 3)` that the proof engine works with.
 Every denominator `2^(n+2) − 3 ≥ 1` is positive, so all terms are well-defined positive reals. It
@@ -120,4 +130,4 @@ theorem erdos_1050.variants.transcendental.implies_erdos_1050
       Transcendental ℚ (∑' n : ℕ, (1 : ℝ) / ((2 : ℝ) ^ (n + 1) + (t : ℝ)))) :
     Irrational (∑' n : ℕ, (1 : ℝ) / ((2 : ℝ) ^ (n + 1) - 3)) := sorry
 
-end Erdos1050
+end LeanGallery.NumberTheory.Erdos1050

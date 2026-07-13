@@ -52,7 +52,7 @@ set_option warningAsError false
 open scoped BigOperators
 open Finset
 
-namespace Erdos880
+namespace LeanGallery.Combinatorics.Erdos880
 
 /-! ### The problem's vocabulary (`Basic.lean`) -/
 
@@ -124,8 +124,16 @@ theorem erdos_880_order_two (A : Set ℕ) (hbasis : IsBasisOfOrder A 2) :
 /-- **Erdős #880, faithful `Δ` form (`k ≥ 3`).** For every `h ≥ 3` there exists a basis `A` of order
 `h` whose restricted-sum set has asymptotic gap functional `Δ = +∞` — exactly the paper's
 `Δ(𝒜 ∪ 2×𝒜 ∪ ⋯ ∪ h×𝒜) = +∞` (HHP07 Theorem 1(ii)). This restates the negative answer in the paper's
-own `limsup` language rather than via the `UnboundedGaps` predicate. -/
-theorem erdos_880_delta (h : ℕ) (hh : 3 ≤ h) :
+own `limsup` language rather than via the `UnboundedGaps` predicate.
+
+⚠️ This is the **one deliberately restated theorem** in this pair. The gallery proves the sharper
+`erdos_880_delta : Δ (restrictedSums (constA h) h) = ⊤`, which names the explicit HHP07 witness
+`constA`. Naming `constA` *here* would drag its whole recurrence (`xseq`, `block`, `constA`) into the
+trusted surface, forcing a reader to audit a construction the theorem does not depend on. So the
+challenge asks only for the existential — the faithful reading of "for `k ≥ 3` the answer is no" —
+and `Solution.lean` derives it from the gallery's sharper form in one line. Hence the distinct name:
+`erdos_880_delta` in the gallery is a *different statement* from this one. -/
+theorem erdos_880_delta_exists (h : ℕ) (hh : 3 ≤ h) :
     ∃ A : Set ℕ, IsBasisOfOrder A h ∧ Delta (restrictedSums A h) = ⊤ := sorry
 
 /-- **Erdős #880, faithful `Δ` form (`k = 2`).** For a basis `A` of order `2`, the restricted-sum set
@@ -133,4 +141,4 @@ has asymptotic gap functional `Δ(2 × A) ≤ 2` — the paper's Theorem 1(i). -
 theorem erdos_880_order_two_delta (A : Set ℕ) (hbasis : IsBasisOfOrder A 2) :
     Delta (restrictedSums A 2) ≤ 2 := sorry
 
-end Erdos880
+end LeanGallery.Combinatorics.Erdos880

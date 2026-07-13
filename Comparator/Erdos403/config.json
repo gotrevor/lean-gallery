@@ -2,9 +2,9 @@
   "challenge_module": "Comparator.Erdos403.Challenge",
   "solution_module": "Comparator.Erdos403.Solution",
   "theorem_names": [
-    "Erdos403.erdos_403_finite",
-    "Erdos403.erdos_403_sharp",
-    "Erdos403.erdos_403_witness"
+    "LeanGallery.NumberTheory.Erdos403.erdos_403_finite",
+    "LeanGallery.NumberTheory.Erdos403.erdos_403_sharp",
+    "LeanGallery.NumberTheory.Erdos403.witness"
   ],
   "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"],
   "enable_nanoda": true

@@ -2,11 +2,11 @@
   "challenge_module": "Comparator.Erdos1213.Challenge",
   "solution_module": "Comparator.Erdos1213.Solution",
   "theorem_names": [
-    "Erdos1213.erdos_1213",
-    "Erdos1213.erdos_1213_f_finite",
-    "Erdos1213.erdos_1213_anchor_valid",
-    "Erdos1213.erdos_1213_anchor_collision",
-    "Erdos1213.erdos_1213_f_lower"
+    "LeanGallery.Combinatorics.Erdos1213.erdos_1213",
+    "LeanGallery.Combinatorics.Erdos1213.erdos_1213_f_finite",
+    "LeanGallery.Combinatorics.Erdos1213.anchor_valid",
+    "LeanGallery.Combinatorics.Erdos1213.anchor_collision",
+    "LeanGallery.Combinatorics.Erdos1213.hegyvariF_ge_1_1"
   ],
   "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"],
   "enable_nanoda": true
