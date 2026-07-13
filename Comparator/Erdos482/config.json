@@ -1,0 +1,13 @@
+{
+  "challenge_module": "Comparator.Erdos482.Challenge",
+  "solution_module": "Comparator.Erdos482.Solution",
+  "theorem_names": [
+    "Erdos482.graham_pollak",
+    "Erdos482.graham_pollak_digits",
+    "Erdos482.cor33_unconditional",
+    "Erdos482.erdos482_resolution",
+    "Erdos482.binDigit_sqrt2_first_six"
+  ],
+  "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"],
+  "enable_nanoda": true
+}

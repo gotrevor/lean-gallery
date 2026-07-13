@@ -1,0 +1,13 @@
+{
+  "challenge_module": "Comparator.Erdos1213.Challenge",
+  "solution_module": "Comparator.Erdos1213.Solution",
+  "theorem_names": [
+    "Erdos1213.erdos_1213",
+    "Erdos1213.erdos_1213_f_finite",
+    "Erdos1213.erdos_1213_anchor_valid",
+    "Erdos1213.erdos_1213_anchor_collision",
+    "Erdos1213.erdos_1213_f_lower"
+  ],
+  "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"],
+  "enable_nanoda": true
+}

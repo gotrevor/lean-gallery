@@ -21,3 +21,10 @@ rev = "v4.31.0"
 
 [[lean_lib]]
 name = "LeanGallery"
+
+# The comparator harness (Comparator/<Result>/{Challenge,Solution}.lean). NOT in defaultTargets and
+# NOT imported by LeanGallery.lean: challenge files carry `sorry` by design, so they must stay out of
+# the main build (which is warnings-as-errors). Built on demand by `comparator` itself, and in CI.
+[[lean_lib]]
+name = "Comparator"
+globs = ["Comparator.+"]
