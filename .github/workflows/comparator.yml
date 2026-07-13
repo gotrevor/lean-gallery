@@ -23,7 +23,12 @@ name: Comparator
 # fine: this is an external-verifiability gate, not a dev loop.
 
 on:
+  # `push` is scoped to the default branch on purpose — see the note in ci.yml. An unscoped `push`
+  # plus `pull_request` makes a PR branch run every job twice, and this job is the expensive one: it
+  # builds landrun (Go), nanoda (Rust), lean4export and comparator (both Lean, on their own
+  # toolchains) before it verifies anything.
   push:
+    branches: [main]
     paths-ignore: ['**.md']
   pull_request:
   workflow_dispatch:
