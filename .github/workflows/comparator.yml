@@ -45,8 +45,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # --- the three external binaries comparator needs -------------------------------------
-      # Cached together: none of them depend on this repo, so the key is just their pinned versions.
+      # elan/lake MUST come first: the verifier build below compiles lean4export and comparator,
+      # which are Lean projects. (They are on their own toolchains -- elan fetches whatever each
+      # one's lean-toolchain pins, independently of ours.) `build: false` because we drive the
+      # project's own build explicitly further down.
+      - uses: leanprover/lean-action@v1
+        with:
+          build: false
+
+      # --- the four external binaries comparator needs --------------------------------------
+      # Cached together: none of them depend on this repo, so the key is just the pinned versions.
       - name: Cache verifier binaries
         id: cache-bins
         uses: actions/cache@v4
@@ -80,10 +88,6 @@ jobs:
           (cd comparator && lake build comparator && cp .lake/build/bin/comparator ~/verifier-bin/)
 
       # --- the project itself (prebuilt Mathlib oleans from the cache) -----------------------
-      - uses: leanprover/lean-action@v1
-        with:
-          build: false
-
       - name: Build gallery + comparator modules
         run: |
           lake exe cache get
