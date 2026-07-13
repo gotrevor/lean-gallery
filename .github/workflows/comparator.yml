@@ -48,7 +48,7 @@ jobs:
       # "incompatible header". Keep in lockstep with lean-toolchain.
       LEAN4EXPORT_TAG: v4.31.0
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       # elan/lake MUST come first: the verifier build below compiles lean4export and comparator,
       # which are Lean projects. (They are on their own toolchains -- elan fetches whatever each
@@ -62,7 +62,7 @@ jobs:
       # Cached together: none of them depend on this repo, so the key is just the pinned versions.
       - name: Cache verifier binaries
         id: cache-bins
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/verifier-bin
           key: verifier-bin-${{ runner.os }}-${{ env.LEAN4EXPORT_TAG }}-v1

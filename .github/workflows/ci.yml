@@ -36,7 +36,7 @@ jobs:
   axioms:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       # elan + `lake exe cache get` (prebuilt Mathlib oleans) + `lake build`.
       - uses: leanprover/lean-action@v1
       # Runs the checked-in audit file (scripts/AxiomCheck.lean = the imports + one guarded
@@ -89,7 +89,7 @@ jobs:
           && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'))
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: leanprover/lean-action@v1
         with:
           build: false          # we drive the doc build ourselves from docbuild/
@@ -115,7 +115,7 @@ jobs:
       - name: Trim docs to gallery (relink deps to hosted mathlib4_docs)
         run: python3 docbuild/trim-docs.py docbuild/.lake/build/doc LeanGallery
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: docbuild/.lake/build/doc
 
@@ -132,4 +132,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
