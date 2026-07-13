@@ -1,0 +1,250 @@
+# formalization.yaml -- self-reported provenance for LeanGallery.
+# Schema: https://github.com/mathlib-initiative/formalization.yaml (v0.3)
+#
+# Everything below is either machine-derived or explicitly marked as an estimate. Where a fact was
+# not recorded at the time (per-run model versions, active effort), it says so rather than guessing.
+
+version: "v0.3"
+
+project:
+  name: "LeanGallery"
+  authors: ["Trevor Morris"]
+  license: "Apache-2.0"
+
+sources:
+  - title: "On the restricted ordinal theorem"
+    authors: ["R. L. Goodstein"]
+    id: "https://doi.org/10.2307/2268019"
+    type: "paper"
+    author_contacted: "n/a"
+
+  - title: "Accessible independence results for Peano arithmetic"
+    authors: ["Laurie Kirby", "Jeff Paris"]
+    id: "https://doi.org/10.1112/blms/14.4.285"
+    type: "paper"
+    author_contacted: "n/a"
+
+  - title: "Erdős Problem #403 (only finitely many powers of two are sums of distinct factorials)"
+    authors: ["P. Frankl", "Shen Lin"]
+    id: "https://www.erdosproblems.com/403"
+    type: "problem"
+    author_contacted: "n/a"
+    prior_work: ""   # both known solutions are unpublished; no prior formalization found
+
+  - title: "On consecutive sums in sequences"
+    authors: ["Norbert Hegyvári"]
+    id: "https://doi.org/10.1007/BF01949064"
+    type: "paper"
+    author_contacted: "n/a"
+
+  - title: "On the irrationality of ∑ 1/(qⁿ + r)"
+    authors: ["Peter Borwein"]
+    id: "https://www.cecm.sfu.ca/~pborwein/PAPERS/P59.pdf"
+    type: "paper"
+    author_contacted: "n/a"
+
+  - title: "Answer to the Burr–Erdős question on restricted addition (HHP07)"
+    authors: ["Norbert Hegyvári", "François Hennecart", "Alain Plagne"]
+    id: "https://doi.org/10.1017/S0963548306008224"
+    type: "paper"
+    author_contacted: "n/a"
+
+  - title: "A Fancy Way to Generate the Binary Digits of √2 / Graham–Pollak-type recurrences"
+    authors: ["Thomas Stoll"]
+    id: "https://arxiv.org/abs/0902.4168"
+    type: "preprint"
+    author_contacted: "n/a"
+
+status:
+  scope: >-
+    A publish-only showcase: seven finished, axiom-clean formalizations, promoted here from private
+    development repos once complete. Every headline is machine-certified twice over --
+    `scripts/AxiomCheck.lean` pins each theorem's axiom set with `#guard_msgs`, and
+    `leanprover/comparator` (see `comparator_config` below, and .github/workflows/comparator.yml)
+    independently certifies that each headline really proves the statement written in a Mathlib-only
+    challenge file, replayed through BOTH the Lean kernel and the independent `nanoda` kernel.
+  sorry_count: 1
+  sorry_in_definitions: 0
+  axioms: ["propext", "Quot.sound", "Classical.choice"]
+
+  # The single `sorry` is deliberate and is NOT a gap in any result: it is the STATEMENT of an OPEN
+  # conjecture (Erdős [Er88c], transcendence of ∑ 1/(2ⁿ+t)), carried so the open problem can be
+  # stated and so the proved conditional `…transcendental.implies_erdos_1050` has something to be
+  # conditional on. It is `#guard_msgs`-pinned, so if it is ever proved, the pin trips loudly. It is
+  # deliberately excluded from every comparator challenge -- a challenge may contain only theorems
+  # the solution actually proves.
+
+  main_results:
+    - declaration: "LeanGallery.Logic.Goodstein.goodstein_terminates"
+      file: "LeanGallery/Logic/Goodstein/Statement.lean"
+      sorry_count: 0
+      axioms: ["propext", "Quot.sound", "Classical.choice"]
+      comparator_config: "Comparator/Goodstein/config.json"
+
+    - declaration: "LeanGallery.Logic.Hydra.hydra_terminates"
+      file: "LeanGallery/Logic/Hydra/Statement.lean"
+      sorry_count: 0
+      axioms: ["propext", "Quot.sound", "Classical.choice"]
+      comparator_config: "Comparator/Hydra/config.json"
+
+    - declaration: "LeanGallery.NumberTheory.Erdos403.erdos_403_finite"
+      file: "LeanGallery/NumberTheory/Erdos403/Statement.lean"
+      sorry_count: 0
+      axioms: ["propext", "Quot.sound", "Classical.choice"]
+      comparator_config: "Comparator/Erdos403/config.json"
+
+    - declaration: "LeanGallery.Combinatorics.Erdos1213.erdos_1213"
+      file: "LeanGallery/Combinatorics/Erdos1213/Statement.lean"
+      sorry_count: 0
+      axioms: ["propext", "Quot.sound", "Classical.choice"]
+      comparator_config: "Comparator/Erdos1213/config.json"
+
+    - declaration: "LeanGallery.NumberTheory.Erdos1050.erdos_1050"
+      file: "LeanGallery/NumberTheory/Erdos1050/Basic.lean"
+      sorry_count: 0
+      axioms: ["propext", "Quot.sound", "Classical.choice"]
+      comparator_config: "Comparator/Erdos1050/config.json"
+
+    - declaration: "LeanGallery.Combinatorics.Erdos880.erdos_880"
+      file: "LeanGallery/Combinatorics/Erdos880/Statement.lean"
+      sorry_count: 0
+      axioms: ["propext", "Quot.sound", "Classical.choice"]
+      comparator_config: "Comparator/Erdos880/config.json"
+
+    - declaration: "LeanGallery.NumberTheory.Erdos482.graham_pollak"
+      file: "LeanGallery/NumberTheory/Erdos482/Statement.lean"
+      sorry_count: 0
+      axioms: ["propext", "Quot.sound", "Classical.choice"]
+      comparator_config: "Comparator/Erdos482/config.json"
+
+automation:
+  methods:
+    - method: "agent"
+      framework: "Claude Code"
+      tool_setup: >-
+        Interactive agent sessions for design, statement authoring, and proof architecture. The
+        trusted statement surface (each result's `Statement.lean`, and the Mathlib-only comparator
+        `Challenge.lean` files) was authored and reviewed with a human in the loop -- statements are
+        never delegated unsupervised, since `#print axioms` certifies the proof and not the statement.
+      cost:
+        hardware: "local laptop (Apple M4 Max); API-only for the models"
+
+    - method: "autonomous"
+      framework: "lean-treadmill (custom autonomous grind harness over Claude Code)"
+      tool_setup: >-
+        Long-running autonomous "laps": the agent grinds on remaining `sorry`s, with periodic review
+        laps, a build-must-be-green gate, and an axiom gate (`lean-axiom-gate`) that rejects any lap
+        introducing a new axiom or `native_decide`. House rules that mattered: unconditionally
+        sorry-free AND axiom-free (asking only for "sorry-free" invites the model to introduce
+        axioms instead), and no unreviewed `maxHeartbeats` bumps.
+      cost:
+        hardware: "local laptop; API-only for the models"
+
+  # Deliberately NOT filled with invented numbers.
+  spend_usd: >-
+    subscription-based usage (Claude Max), not metered API spend -- so there is no meaningful
+    dollar figure to report. The real cost was usage-window, not currency.
+
+  notes: >-
+    Models: Anthropic Claude, driven through Claude Code. The autonomous harness defaults to the
+    Opus tier, with Sonnet available as an adaptive floor on cheaper laps. Exact per-result model
+    VERSIONS were not logged at the time and are not reconstructable, so they are not listed here
+    rather than guessed; development spans roughly 2026-05-30 to 2026-07-06, across several Opus
+    releases.
+
+    Wall-clock, per result, is reported as the CALENDAR SPAN between the first and last commit of
+    the corresponding private development repo. This OVERSTATES effort: the repos stayed open for
+    polish after the mathematics landed, and several results (notably #1050 and #880) were actually
+    closed in a single overnight autonomous run. Treat these as upper bounds on elapsed time, not
+    as measures of work:
+      Erdos403   2026-05-30 -> 2026-07-06   (~38 days elapsed,  56 commits)
+      Erdos482   2026-06-06 -> 2026-07-06   (~31 days elapsed, 274 commits)
+      Erdos1213  2026-06-06 -> 2026-07-06   (~31 days elapsed,  35 commits)
+      Erdos1050  2026-06-10 -> 2026-07-04   (~25 days elapsed, 130 commits)
+      Erdos880   2026-06-10 -> 2026-07-06   (~27 days elapsed, 118 commits)
+      Goodstein  2026-06-18 -> 2026-07-05   (~18 days elapsed) -- shared repo, see below
+      Hydra      2026-06-18 -> 2026-07-05   (~18 days elapsed) -- shared repo, see below
+    Goodstein and Hydra were developed inside a single larger expedition repo (a PA-independence
+    project), so their span is that repo's and cannot be attributed to these two results alone.
+
+fidelity:
+  divergences: >-
+    Erdős #482 is resolved in GREATER generality than the source: `erdos482_resolution` proves that
+    for every real w > 0 and base g >= 2 an explicit Graham-Pollak-type recurrence reads the base-g
+    digits of w, not merely the binary digits of √2.
+
+    Erdős #880 is likewise extended beyond the headline question (exact order, and the HHP07
+    Theorem 3/4/8/9 companions are included).
+
+    Erdős #1050: the general engine (`borwein_thm1_abs`) proves Borwein's Theorem 1 in full -- ∑
+    1/(qⁿ+c) is irrational for any integer base of magnitude >= 2 and any nonzero rational c --
+    which is stronger than the q=2, c=-3 instance the problem asks for.
+
+    In the comparator challenges, both k >= 3 headlines of #880 are stated EXISTENTIALLY ("there is
+    a basis of order h whose restricted-sum set has unbounded gaps"), which is what HHP07 Thm 1(ii)
+    claims. The proof supplies the explicit Hegyvári-Hennecart-Plagne witness, but naming that
+    construction in the challenge would drag its recurrence into the trusted surface for no gain.
+
+review:
+  status: "self-assessed"
+  reviewers: ["Trevor Morris"]
+  notes: >-
+    No external peer review. What IS machine-enforced, on every push:
+      (1) `scripts/AxiomCheck.lean` -- one `#guard_msgs`-pinned `#print axioms` per headline,
+          asserting the exact standard triple. Any drift (new axiom, a `sorry`, a renamed theorem)
+          fails elaboration. Note this runs inside our own Lean environment.
+      (2) `leanprover/comparator` -- for each result, a Mathlib-only `Challenge.lean` states the
+          headlines; comparator checks the solution proves THOSE statements (every declaration used
+          in a statement must be identical in both environments), replays the proofs through the
+          Lean kernel AND the independent `nanoda` kernel, and enforces the axiom whitelist. The
+          solution is built under a `landrun` sandbox, so a reader can check this repo WITHOUT
+          trusting it or us.
+      (3) warnings-as-errors, and Mathlib's header-style linter, on the whole library.
+    The honest residual risk is statement faithfulness: comparator proves the solution establishes
+    the challenge's statements, but a human must still read each `Challenge.lean` and agree it says
+    what the source paper says. That is what those files are FOR -- they are small on purpose.
+
+alignment:
+  namespace: "LeanGallery"
+  statements:
+    - source: "Goodstein 1944 -- every Goodstein sequence terminates"
+      lean: "LeanGallery.Logic.Goodstein.goodstein_terminates"
+      module: "LeanGallery.Logic.Goodstein.Statement"
+      status: "proved"
+    - source: "Kirby–Paris 1982 -- Hercules always wins (every hydra dies)"
+      lean: "LeanGallery.Logic.Hydra.hydra_terminates"
+      module: "LeanGallery.Logic.Hydra.Statement"
+      status: "proved"
+    - source: "Erdős #403 -- only finitely many powers of 2 are sums of distinct factorials"
+      lean: "LeanGallery.NumberTheory.Erdos403.erdos_403_finite"
+      module: "LeanGallery.NumberTheory.Erdos403.Statement"
+      status: "proved"
+      note: "sharp form `erdos_403_sharp` (m ≤ 7) plus the witness 2⁷ = 2!+3!+5! are also proved"
+    - source: "Hegyvári 1986, Theorem 3 (Erdős #1213)"
+      lean: "LeanGallery.Combinatorics.Erdos1213.erdos_1213"
+      module: "LeanGallery.Combinatorics.Erdos1213.Statement"
+      status: "proved"
+    - source: "Borwein 1991/92 (Erdős #1050) -- ∑ 1/(2ⁿ−3) is irrational"
+      lean: "LeanGallery.NumberTheory.Erdos1050.erdos_1050"
+      module: "LeanGallery.NumberTheory.Erdos1050"
+      status: "proved"
+    - source: "Erdős [Er88c] -- ∑ 1/(2ⁿ+t) is transcendental"
+      lean: "LeanGallery.NumberTheory.Erdos1050.erdos_1050.variants.transcendental"
+      module: "LeanGallery.NumberTheory.Erdos1050.Variants"
+      status: "not-formalized"
+      note: >-
+        OPEN CONJECTURE, carried as a `sorry`-bodied statement pinned with `#guard_msgs`. This is the
+        project's only `sorry`. It is excluded from the comparator challenges.
+    - source: "Hegyvári–Hennecart–Plagne 2007, Thm 1 (Erdős #880 / Burr–Erdős)"
+      lean: "LeanGallery.Combinatorics.Erdos880.erdos_880"
+      module: "LeanGallery.Combinatorics.Erdos880.Statement"
+      status: "proved"
+    - source: "Graham–Pollak / Stoll (Erdős #482)"
+      lean: "LeanGallery.NumberTheory.Erdos482.graham_pollak"
+      module: "LeanGallery.NumberTheory.Erdos482.Statement"
+      status: "proved"
+
+acknowledgements: >-
+  Mathlib and the Lean FRO. `leanprover/comparator` and the `nanoda` kernel, which make this repo
+  checkable by someone who does not trust it. The Lean Zulip community, whose `#AI authored projects`
+  channel is where the Challenge/Solution/comparator/formalization.yaml convention was hammered out.

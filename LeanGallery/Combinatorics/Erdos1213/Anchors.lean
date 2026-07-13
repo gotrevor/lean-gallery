@@ -8,8 +8,8 @@ import LeanGallery.Combinatorics.Erdos1213.Main
 /-!
 # Erdős #1213 — machine-checked anchors + certified lower bounds
 
-Two jobs, both *executable* evidence (`native_decide`), neither touching the headline theorem's trust
-base (`#print axioms hegyvari_thm3` stays `[propext, Classical.choice, Quot.sound]`):
+Two jobs, both *executable* evidence, neither touching the headline theorem's trust base
+(`#print axioms hegyvari_thm3` stays `[propext, Classical.choice, Quot.sound]`):
 
 1. **Faithfulness anchors.** The headline statement is only as trustworthy as `csum` /
    `AllCSumsDistinct`. We check that those definitions compute as intended: known-valid sequences are
@@ -26,7 +26,32 @@ base (`#print axioms hegyvari_thm3` stays `[propext, Classical.choice, Quot.soun
 mirror via `Nat.decidableBallLE` / `Finset.decidableBAll` **fails to synthesize** through the nested
 implication chain (tried; it doesn't fire). So we use a plain `Bool` function `distinctB` built from
 `List.all` — no typeclass resolution at all — prove `distinctB a s = true ↔ AllCSumsDistinct a s`,
-and let `native_decide` evaluate the Bool. The pattern is `rw [← distinctB_iff]; native_decide`.
+and evaluate the Bool. The pattern is `rw [← distinctB_iff]; decide +kernel`.
+
+## Which evaluator, and why 🔑
+
+`decide +kernel` evaluates in the **kernel**, adding no axioms of its own, so those uses rest on
+exactly the whitelist above. It is the default here and is used everywhere it is affordable: all
+seven faithfulness anchors, and the certified bounds for `K ≤ 4` (plus every `stepsOkB` check,
+which is linear in the witness length).
+
+`distinctB` is a 4-deep loop with a `csum` inside, so it costs about `s⁵` in the witness length
+`s`. That curve ends the party. Measured, kernel-checking the `distinctB` obligation:
+
+| `K` | `s` = witness length | `decide +kernel` |
+|-----|----------------------|------------------|
+| 2, 3 | 4, 9 | instant |
+| 4 | 17 | ~5s |
+| 5 | 26 | ~33s |
+| 6 | 36 | ~5.5 min |
+| 7 | 47 | not viable |
+
+So `K = 5, 6, 7` keep `native_decide` for that one obligation, and **those three theorems alone
+carry a compiler axiom** (`hegyvariF_ge_1_5/6/7`; check with `#print axioms`). Rewriting the
+checker `Quot`-free (a `List` fold instead of `Finset.Icc`) was tried and does *not* help — the
+cost is the raw `s⁵` volume, not the `Finset`/`Multiset` overhead. Closing this properly needs an
+algorithmic fix (prefix sums, or collecting the c-sums and checking for duplicates in `s² log s`),
+not a better evaluator.
 -/
 
 namespace LeanGallery.Combinatorics.Erdos1213
@@ -34,7 +59,7 @@ open Finset
 
 /-- Bool mirror of `AllCSumsDistinct` on blocks inside `[1,s]`: every pair of blocks with equal c-sum
 is the same block.  Built from `List.all` + `decide` of a (decidable) implication, so it carries no
-`Decidable (AllCSumsDistinct …)` obligation and `native_decide` evaluates it directly. -/
+`Decidable (AllCSumsDistinct …)` obligation and the evaluator computes it directly. -/
 def distinctB (a : ℕ → ℕ) (s : ℕ) : Bool :=
   (List.range' 1 s).all fun u₁ =>
   (List.range' 1 s).all fun v₁ =>
@@ -58,29 +83,29 @@ def seqOf (l : List ℕ) : ℕ → ℕ := fun i => l.getD (i - 1) 0
 
 /-! ## Faithfulness anchors
 
-`distinctB`-based, so `native_decide` evaluates the *real* `AllCSumsDistinct` (via `distinctB_iff`). -/
+`distinctB`-based, so this evaluates the *real* `AllCSumsDistinct` (via `distinctB_iff`), kernel-pure. -/
 
 /-- `f(1,1) = 2`, witness `[1,2]`. -/
-example : AllCSumsDistinct (seqOf [1, 2]) 2 := by rw [← distinctB_iff]; native_decide
+example : AllCSumsDistinct (seqOf [1, 2]) 2 := by rw [← distinctB_iff]; decide +kernel
 
 /-- `f(2,1) = 4`, witness `[2,3,4]`. -/
-example : AllCSumsDistinct (seqOf [2, 3, 4]) 3 := by rw [← distinctB_iff]; native_decide
+example : AllCSumsDistinct (seqOf [2, 3, 4]) 3 := by rw [← distinctB_iff]; decide +kernel
 
 /-- `f(1,2) = 7`, witness `[1,3,5,7]`. -/
-example : AllCSumsDistinct (seqOf [1, 3, 5, 7]) 4 := by rw [← distinctB_iff]; native_decide
+example : AllCSumsDistinct (seqOf [1, 3, 5, 7]) 4 := by rw [← distinctB_iff]; decide +kernel
 
 /-- **Corrected** `f(2,2) = 8`, witness `[2,3,4,6,8]`. -/
-example : AllCSumsDistinct (seqOf [2, 3, 4, 6, 8]) 5 := by rw [← distinctB_iff]; native_decide
+example : AllCSumsDistinct (seqOf [2, 3, 4, 6, 8]) 5 := by rw [← distinctB_iff]; decide +kernel
 
 /-- **The paper's `f(2,2)=10` is an erratum.** Its only candidate (gaps all `2`) collides:
 `a₁+a₂ = 2+4 = 6 = a₃`. So `[2,4,6,8,10]` is NOT all-c-sums-distinct. -/
-example : ¬ AllCSumsDistinct (seqOf [2, 4, 6, 8, 10]) 5 := by rw [← distinctB_iff]; native_decide
+example : ¬ AllCSumsDistinct (seqOf [2, 4, 6, 8, 10]) 5 := by rw [← distinctB_iff]; decide +kernel
 
 /-- One step past `f(1,1)=2`: `[1,2,3]` collides (`a₁+a₂ = 3 = a₃`). -/
-example : ¬ AllCSumsDistinct (seqOf [1, 2, 3]) 3 := by rw [← distinctB_iff]; native_decide
+example : ¬ AllCSumsDistinct (seqOf [1, 2, 3]) 3 := by rw [← distinctB_iff]; decide +kernel
 
 /-- One step past `f(2,2)=8`: `[2,3,4,6,8,9]` collides (`9 = a₆ = a₁+a₂+a₃`). -/
-example : ¬ AllCSumsDistinct (seqOf [2, 3, 4, 6, 8, 9]) 6 := by rw [← distinctB_iff]; native_decide
+example : ¬ AllCSumsDistinct (seqOf [2, 3, 4, 6, 8, 9]) 6 := by rw [← distinctB_iff]; decide +kernel
 
 /-! ## Certified lower bounds on `f(1,K)`
 
@@ -154,13 +179,13 @@ theorem hegyvariF_ge_1_1 : 2 ≤ hegyvariF 1 1 :=
   hegyvariF_ge 1 (by norm_num) w1 2 (by decide) (by decide) (by decide) (by decide) (by decide)
 /-- `f(1,2) ≥ 7`. -/
 theorem hegyvariF_ge_1_2 : 7 ≤ hegyvariF 1 2 :=
-  hegyvariF_ge 2 (by norm_num) w2 7 (by decide) (by decide) (by decide) (by native_decide) (by decide)
+  hegyvariF_ge 2 (by norm_num) w2 7 (by decide) (by decide) (by decide) (by decide +kernel) (by decide)
 /-- `f(1,3) ≥ 20`. -/
 theorem hegyvariF_ge_1_3 : 20 ≤ hegyvariF 1 3 :=
-  hegyvariF_ge 3 (by norm_num) w3 20 (by decide) (by decide) (by decide) (by native_decide) (by decide)
+  hegyvariF_ge 3 (by norm_num) w3 20 (by decide) (by decide) (by decide) (by decide +kernel) (by decide)
 /-- `f(1,4) ≥ 52`. -/
 theorem hegyvariF_ge_1_4 : 52 ≤ hegyvariF 1 4 :=
-  hegyvariF_ge 4 (by norm_num) w4 52 (by decide) (by decide) (by decide) (by native_decide) (by decide)
+  hegyvariF_ge 4 (by norm_num) w4 52 (by decide) (by decide) (by decide) (by decide +kernel) (by decide)
 /-- `f(1,5) ≥ 101`. -/
 theorem hegyvariF_ge_1_5 : 101 ≤ hegyvariF 1 5 :=
   hegyvariF_ge 5 (by norm_num) w5 101 (by decide) (by decide) (by decide) (by native_decide) (by decide)
@@ -169,7 +194,7 @@ theorem hegyvariF_ge_1_6 : 174 ≤ hegyvariF 1 6 :=
   hegyvariF_ge 6 (by norm_num) w6 174 (by decide) (by decide) (by decide) (by native_decide) (by decide)
 /-- `f(1,7) ≥ 264`. -/
 theorem hegyvariF_ge_1_7 : 264 ≤ hegyvariF 1 7 :=
-  hegyvariF_ge 7 (by norm_num) w7 264 (by decide) (by decide) (by native_decide) (by native_decide)
+  hegyvariF_ge 7 (by norm_num) w7 264 (by decide) (by decide) (by decide +kernel) (by native_decide)
     (by decide)
 
 end LeanGallery.Combinatorics.Erdos1213

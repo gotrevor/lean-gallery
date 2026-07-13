@@ -3,7 +3,17 @@ Copyright (c) 2026 Trevor Morris. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Trevor Morris
 -/
-import Mathlib.Data.Nat.Log
+-- `import Mathlib` (not the narrower `Mathlib.Data.Nat.Log`) is load-bearing, not laziness.
+--
+-- Instance resolution depends on what is imported. Under the narrow import, the `b ^ e` in `bump`
+-- elaborates with **core's** `instPowNat`; under full Mathlib it elaborates with **Mathlib's**
+-- `Monoid.toPow`. The two are defeq, so nothing here notices — but they are *different terms*, and
+-- `Comparator/Goodstein/Challenge.lean` must import Mathlib (that is the whole point of a challenge
+-- file). A challenge cannot reproduce a constant that was elaborated in a smaller instance
+-- environment, so comparator rejected `bump` as a mismatch until this import matched.
+--
+-- The rest of the gallery already imports Mathlib wholesale; Goodstein was the outlier.
+import Mathlib
 
 /-!
 # Goodstein's theorem
@@ -58,7 +68,7 @@ This is Goodstein's theorem proper (provable in ZFC, hence in Lean). The
 separate metamathematical statement and is out of scope here.
 
 ## Sample trajectories (machine-checked below)
-The `native_decide` examples at the end of this file compute genuine trajectories
+The `decide +kernel` examples at the end of this file compute genuine trajectories
 straight from the definition, so a vacuous or placeholder definition could not
 reproduce them. The seed `m = 4` is the first whose hereditary form has an exponent
 equal to the base (`4 = 2 ^ 2`), exercising the *recursive exponent bump* that the
@@ -108,39 +118,51 @@ def goodsteinSeq (m : ℕ) : ℕ → ℕ
 
 /-! ### Ground-truth anchors (faithfulness gate)
 
-Hand-computed Goodstein trajectories, discharged by `native_decide` straight from the
+Hand-computed Goodstein trajectories, discharged by `decide +kernel` straight from the
 definition above. They are the anti-vacuity lock on `goodsteinSeq`: a placeholder
-definition could not reproduce the nonzero intermediate values. Each is a standalone
-`example` that never sits on `goodstein_terminates`'s axiom path, so `native_decide`
-here is harmless — re-check `#print axioms goodstein_terminates`, not these. They live
-in `src/` so they count toward the no-`sorry` gate. -/
+definition could not reproduce the nonzero intermediate values.
+
+`decide +kernel` hands the evaluation to the **kernel**, so each anchor rests on exactly
+the axioms the definition already carries — `[propext, Classical.choice, Quot.sound]`,
+which enter through `bump`'s well-founded-recursion termination proof — and on nothing
+else. That is the *same* whitelist as `goodstein_terminates`, so the anchors need no
+excuse: unlike `native_decide`, which mints a fresh opaque axiom per declaration
+(`…_native.native_decide.ax_1_1`) attesting that a compiled binary printed the right
+answer, there is no appeal here to the compiler, and none to "these examples sit off the
+headline's axiom path."
+
+(Plain `decide` cannot discharge them: `bump` is compiled by well-founded recursion and
+so is sealed `irreducible`, which stops the elaborator's `whnf`. The kernel ignores that
+seal, and its GMP-backed `Nat` literals then make the reduction cheap — the whole block
+below checks in about a second.) They live in `src/` so they count toward the no-`sorry`
+gate. -/
 
 -- m = 0 : already 0
-example : goodsteinSeq 0 0 = 0 := by native_decide
+example : goodsteinSeq 0 0 = 0 := by decide +kernel
 
 -- m = 1 : 1, 0
-example : goodsteinSeq 1 0 = 1 := by native_decide
-example : goodsteinSeq 1 1 = 0 := by native_decide
+example : goodsteinSeq 1 0 = 1 := by decide +kernel
+example : goodsteinSeq 1 1 = 0 := by decide +kernel
 
 -- m = 2 : 2, 2, 1, 0
-example : goodsteinSeq 2 0 = 2 := by native_decide
-example : goodsteinSeq 2 1 = 2 := by native_decide
-example : goodsteinSeq 2 2 = 1 := by native_decide
-example : goodsteinSeq 2 3 = 0 := by native_decide
+example : goodsteinSeq 2 0 = 2 := by decide +kernel
+example : goodsteinSeq 2 1 = 2 := by decide +kernel
+example : goodsteinSeq 2 2 = 1 := by decide +kernel
+example : goodsteinSeq 2 3 = 0 := by decide +kernel
 
 -- m = 3 : 3, 3, 3, 2, 1, 0  (the classic short-but-not-trivial trajectory)
-example : goodsteinSeq 3 0 = 3 := by native_decide
-example : goodsteinSeq 3 1 = 3 := by native_decide
-example : goodsteinSeq 3 2 = 3 := by native_decide
-example : goodsteinSeq 3 3 = 2 := by native_decide
-example : goodsteinSeq 3 4 = 1 := by native_decide
-example : goodsteinSeq 3 5 = 0 := by native_decide
+example : goodsteinSeq 3 0 = 3 := by decide +kernel
+example : goodsteinSeq 3 1 = 3 := by decide +kernel
+example : goodsteinSeq 3 2 = 3 := by decide +kernel
+example : goodsteinSeq 3 3 = 2 := by decide +kernel
+example : goodsteinSeq 3 4 = 1 := by decide +kernel
+example : goodsteinSeq 3 5 = 0 := by decide +kernel
 
 -- m = 4 : 4, 26, 41, 60, …  (first seed to exercise the recursive exponent bump,
 -- since 4 = 2 ^ 2; the full trajectory grows enormously before descending to 0)
-example : goodsteinSeq 4 0 = 4 := by native_decide
-example : goodsteinSeq 4 1 = 26 := by native_decide
-example : goodsteinSeq 4 2 = 41 := by native_decide
-example : goodsteinSeq 4 3 = 60 := by native_decide
+example : goodsteinSeq 4 0 = 4 := by decide +kernel
+example : goodsteinSeq 4 1 = 26 := by decide +kernel
+example : goodsteinSeq 4 2 = 41 := by decide +kernel
+example : goodsteinSeq 4 3 = 60 := by decide +kernel
 
 end LeanGallery.Logic.Goodstein

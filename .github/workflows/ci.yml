@@ -1,7 +1,12 @@
 name: CI
 
 on:
+  # `push` is scoped to the default branch on purpose. An unscoped `push` fires on EVERY branch, and
+  # since `pull_request` fires for the same commit too, a PR branch would run every job TWICE (and a
+  # pending duplicate of a required check blocks the merge). `main` is ruleset-protected, so the only
+  # real work for this trigger is the post-merge commit — which is what `docs`/`deploy` gate on.
   push:
+    branches: [main]
     paths-ignore: ['**.md']
   pull_request:
   workflow_dispatch:

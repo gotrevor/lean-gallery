@@ -1,0 +1,9 @@
+{
+  "challenge_module": "Comparator.Hydra.Challenge",
+  "solution_module": "Comparator.Hydra.Solution",
+  "theorem_names": [
+    "LeanGallery.Logic.Hydra.hydra_terminates"
+  ],
+  "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"],
+  "enable_nanoda": true
+}

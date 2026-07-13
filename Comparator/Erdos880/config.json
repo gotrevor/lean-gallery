@@ -1,0 +1,12 @@
+{
+  "challenge_module": "Comparator.Erdos880.Challenge",
+  "solution_module": "Comparator.Erdos880.Solution",
+  "theorem_names": [
+    "LeanGallery.Combinatorics.Erdos880.erdos_880",
+    "LeanGallery.Combinatorics.Erdos880.erdos_880_order_two",
+    "LeanGallery.Combinatorics.Erdos880.erdos_880_delta_exists",
+    "LeanGallery.Combinatorics.Erdos880.erdos_880_order_two_delta"
+  ],
+  "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"],
+  "enable_nanoda": true
+}
