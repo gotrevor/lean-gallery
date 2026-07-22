@@ -1,0 +1,2 @@
+# Summary of changes for run ac7a4022-6fd1-4c04-8c06-f02b280fa73e
+Replaced the `sorry` in `block_orbit_base_two` (Problem.lean) with a complete proof following the file's recipe: induction on n with `simp`/`norm_num` for the base case, and for the step case casing on the bit hypothesis and discharging both bounds via `pow_succ'`/`mul_assoc` rewrites plus `linarith`. Verified with a successful build; the theorem depends only on the standard axioms (propext, Classical.choice, Quot.sound) and uses no `native_decide`.

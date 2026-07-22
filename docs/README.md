@@ -7,6 +7,7 @@ that used to live in each result's standalone development repo.
 | Result | Docs |
 |--------|------|
 | **Erdős #403** — distinct factorials summing to a power of 2 | [`Erdos403/`](Erdos403) |
+| **Erdős #482** — Graham–Pollak, reading binary digits of √2 off a recurrence | [`Erdos482/`](Erdos482) |
 
 *(More results absorb here as their standalone repos are folded in.)*
 
@@ -25,6 +26,8 @@ Findings so far:
 | Finding | Result | Where |
 |---|---|---|
 | The original proofs are **lost by construction** — [Lin 1976] is an unpublished Bell Labs internal memorandum, [Frankl 1976] was a personal communication. Neither was written for publication and no source reproduces the argument, so the formalization is a **reconstruction**, not a transcription. It also turned out not to need the lost carry estimate. | #403 | [`Erdos403/LITERATURE-FINDINGS.md`](Erdos403/LITERATURE-FINDINGS.md) |
+| Two items in **Theorem 3.2**, pair `i = 5`, of Stoll, *A fancy way to obtain the binary digits of 759250125√2*, **Amer. Math. Monthly 117** (2010). Found while formalizing; exact-integer computations, reproducible. | #482 | [`Erdos482/STOLL-PAIR5-ERRATUM.md`](Erdos482/STOLL-PAIR5-ERRATUM.md) |
+| **Theorem 3.1** of Stoll, *On a problem of Erdős and Graham concerning digits*, **Acta Arith. 125** (2006). | #482 | [`Erdos482/notes/ST06-THM31-ERRATUM.md`](Erdos482/notes/ST06-THM31-ERRATUM.md) |
 
 These are reported as findings about *published mathematics*, in the ordinary way one reports an
 erratum: the mathematics is what is at issue, and nothing here is a claim about any author.
