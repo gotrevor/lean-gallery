@@ -23,6 +23,14 @@ promoted in here.
 | `Combinatorics/Erdos880` | **Erdős #880** (Hegyvári–Hennecart–Plagne 2007) — for an additive basis `A` of order `k`, are the gaps of its restricted-sum set (sums of `≤ k` distinct elements) bounded? **Yes for `k = 2`** (`erdos_880_order_two`, gaps eventually `≤ 2`); **no for `k ≥ 3`** (`erdos_880`: an explicit order-`h` basis with arbitrarily long gaps). Includes the faithful `Δ = limsup`-gap restatements and the HHP07 Theorem 3/4/8/9 companions; an in-library `AxiomGuard` build-checks `#print axioms` for ~25 theorems. | ✅ axiom-clean |
 | `NumberTheory/Erdos482` | **Erdős #482 / Graham–Pollak** (Stoll) — the recurrence `u(0)=1, u(n+1)=⌊√2·(uₙ+½)⌋` reads off the binary expansion of `√2`: the difference `u(2n+1) − 2·u(2n−1)` is the `n`-th binary digit of `√2` (`graham_pollak`). Resolved in **full generality** (`erdos482_resolution`): for every real `w > 0` and base `g ≥ 2`, an explicit Graham–Pollak-type recurrence reads the base-`g` digits of `w`. Includes Stoll's `759250125·√2` showcase constant (`cor33_unconditional`) and the St06 digit-frontier family. | ✅ axiom-clean |
 
+### 📚 Per-result writeups → [`docs/`](docs)
+
+How each proof works, what the literature actually said, and the session-by-session development
+record. Includes the 🕳️ **findings about the published literature** that formalizing turned up —
+starting with #403, whose original proofs turn out to be **lost by construction** (an unpublished
+Bell Labs memo and a personal communication), making the formalization a reconstruction rather than
+a transcription. Index: [`docs/README.md`](docs/README.md).
+
 ## What to audit (faithfulness)
 
 The trust surface for each result is small and called out explicitly. For Goodstein:
