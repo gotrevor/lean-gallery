@@ -12,12 +12,14 @@ weak.linter.style.header = true
 # — and so the pre-commit gate + CI — fails on ANY warning, keeping finished results clean.
 weak.warningAsError = true
 
-# Mathlib pinned as a DIRECT require at v4.31.0 (matches the ~/.lake-base/4.31.0 universe
-# store, so `lake-base link` CoW-clones the prebuilt oleans in — no 40-min cold build).
+# Mathlib pinned as a DIRECT require at the release tag matching `lean-toolchain` (which is
+# also the universe store's key, so `lake-base link` CoW-clones the prebuilt oleans in — no
+# 40-min cold build). The tag lives in the `rev` below; naming it again here would only go
+# stale on the next bump.
 [[require]]
 name = "mathlib"
 git = "https://github.com/leanprover-community/mathlib4.git"
-rev = "v4.31.0"
+rev = "v4.32.0"
 
 [[lean_lib]]
 name = "LeanGallery"
