@@ -56,7 +56,7 @@ theorem ae_orbit_mem_of_isOpen (U : Set (AddCircle (1:ℝ))) (hU : IsOpen U) (hU
   have hposU : 0 < volume U := hU.measure_pos volume hUne
   have hUA : U ⊆ A := fun x hx => ⟨0, by simpa using hx⟩
   have hposA : 0 < volume A := lt_of_lt_of_le hposU (measure_mono hUA)
-  have hle : T ⁻¹' A ≤ᵐ[volume] A := HasSubset.Subset.eventuallyLE hpre
+  have hle : T ⁻¹' A ≤ᵐ[volume] A := LE.le.eventuallyLE hpre
   have huniv : A =ᵐ[volume] univ := by
     rcases herg.ae_empty_or_univ_of_preimage_ae_le hA.nullMeasurableSet hle with h | h
     · exact absurd (by rw [measure_congr h]; simp : volume A = 0) (ne_of_gt hposA)

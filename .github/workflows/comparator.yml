@@ -46,7 +46,7 @@ jobs:
     env:
       # lean4export MUST match the Lean version of THIS project's oleans, or it refuses them with
       # "incompatible header". Keep in lockstep with lean-toolchain.
-      LEAN4EXPORT_TAG: v4.31.0
+      LEAN4EXPORT_TAG: v4.32.0
     steps:
       - uses: actions/checkout@v7
 
