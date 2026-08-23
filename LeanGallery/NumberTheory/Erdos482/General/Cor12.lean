@@ -34,7 +34,7 @@ theorem cor12_ternary_sqrt2 (n : ℕ) (hn : 1 ≤ n) :
     gu 3 ((9 - 3 * Real.sqrt 2) / 14) (6 + 2 * Real.sqrt 2) 0 (2 * n)
         - 3 * gu 3 ((9 - 3 * Real.sqrt 2) / 14) (6 + 2 * Real.sqrt 2) 0 (2 * n - 2)
       = ((Real.digits (Real.sqrt 2 * (3 : ℝ) ^ (n - 1) / 3) 3 0 : ℕ) : ℤ) := by
-  haveI : NeZero (3 : ℕ) := ⟨by norm_num⟩
+  have : NeZero (3 : ℕ) := ⟨by norm_num⟩
   have h2 : Real.sqrt 2 ^ 2 = 2 := Real.sq_sqrt (by norm_num)
   have hpos : (0 : ℝ) < Real.sqrt 2 + 3 := by have := sqrt2_ge_one; linarith
   -- a = 3/((3−1)(√2+3))
@@ -54,7 +54,7 @@ theorem cor12_ternary_sqrt2_literal (n : ℕ) (hn : 2 ≤ n) :
     gu 3 ((9 - 3 * Real.sqrt 2) / 14) (6 + 2 * Real.sqrt 2) 0 (2 * n)
         - 3 * gu 3 ((9 - 3 * Real.sqrt 2) / 14) (6 + 2 * Real.sqrt 2) 0 (2 * n - 2)
       = ((Real.digits (Real.sqrt 2) 3 (n - 2) : ℕ) : ℤ) := by
-  haveI : NeZero (3 : ℕ) := ⟨by norm_num⟩
+  have : NeZero (3 : ℕ) := ⟨by norm_num⟩
   rw [cor12_ternary_sqrt2 n (by omega)]
   exact digit_recon 3 (Real.sqrt 2) (Real.sqrt_nonneg 2) n hn
 

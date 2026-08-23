@@ -67,7 +67,7 @@ theorem cor11_binary_sqrt2_literal (j : ℕ) (hj : 1 ≤ j) (n : ℕ) (hn : 2 �
         - 2 * gv (2 * (j : ℝ) + 1 - Real.sqrt 2)
             (2 / (2 * (j : ℝ) + 1 - Real.sqrt 2)) (1 / 2) (2 * n - 2)
       = ((Real.digits (Real.sqrt 2) 2 (n - 2) : ℕ) : ℤ) := by
-  haveI : NeZero (2 : ℕ) := ⟨by norm_num⟩
+  have : NeZero (2 : ℕ) := ⟨by norm_num⟩
   rw [cor11_binary_sqrt2 j hj n (by omega)]
   exact digit_recon 2 (Real.sqrt 2) (Real.sqrt_nonneg 2) n hn
 

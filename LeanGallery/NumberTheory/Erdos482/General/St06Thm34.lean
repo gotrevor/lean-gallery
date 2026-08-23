@@ -405,7 +405,7 @@ theorem st06_thm34_digits (t : ℝ) (ht0 : 0 ≤ t) (ht1 : 1 ≤ t) (ht2 : t < 2
     (n : ℕ) (hn : 1 ≤ n) :
     su a b (1 / 2) (1 / 2) m (2 * n) - 2 * su a b (1 / 2) (1 / 2) m (2 * n - 2)
       = ((Real.digits (t * (2 : ℝ) ^ (n - 1) / 2) 2 0 : ℕ) : ℤ) := by
-  haveI : NeZero (2 : ℕ) := ⟨by norm_num⟩
+  have : NeZero (2 : ℕ) := ⟨by norm_num⟩
   have hclosed := (st06_thm34_closed t ht1 ht2 m l k hm hl1 hlm hk a b ha hb).1
   have := digit_of_evenClosed_coeff 2 (le_refl 2) t ht0 m _ hclosed n hn
   simpa using this
@@ -417,7 +417,7 @@ theorem st06_thm34_isBit (t : ℝ) (ht0 : 0 ≤ t) (ht1 : 1 ≤ t) (ht2 : t < 2)
     (n : ℕ) (hn : 1 ≤ n) :
     su a b (1 / 2) (1 / 2) m (2 * n) - 2 * su a b (1 / 2) (1 / 2) m (2 * n - 2) = 0 ∨
       su a b (1 / 2) (1 / 2) m (2 * n) - 2 * su a b (1 / 2) (1 / 2) m (2 * n - 2) = 1 := by
-  haveI : NeZero (2 : ℕ) := ⟨by norm_num⟩
+  have : NeZero (2 : ℕ) := ⟨by norm_num⟩
   rw [st06_thm34_digits t ht0 ht1 ht2 m l k hm hl1 hlm hk a b ha hb n hn,
     realDigits_eq_digitStep 2 (t * (2 : ℝ) ^ (n - 1) / 2) (by positivity) 0]
   simp only [pow_zero, mul_one]
@@ -516,7 +516,7 @@ theorem st06_thm34_digits_eps (t : ℝ) (ht0 : 0 ≤ t) (ht1 : 1 ≤ t) (ht2 : t
     (n : ℕ) (hn : 1 ≤ n) :
     su a b ε (1 / 2) m (2 * n) - 2 * su a b ε (1 / 2) m (2 * n - 2)
       = ((Real.digits (t * (2 : ℝ) ^ (n - 1) / 2) 2 0 : ℕ) : ℤ) := by
-  haveI : NeZero (2 : ℕ) := ⟨by norm_num⟩
+  have : NeZero (2 : ℕ) := ⟨by norm_num⟩
   have hclosed := (st06_thm34_closed_eps t ht1 ht2 m l k hm hl1 hlm hk a b ha hb ε hεlo hεhi).1
   have := digit_of_evenClosed_coeff 2 (le_refl 2) t ht0 m _ hclosed n hn
   simpa using this
@@ -531,7 +531,7 @@ theorem st06_thm34_isBit_eps (t : ℝ) (ht0 : 0 ≤ t) (ht1 : 1 ≤ t) (ht2 : t 
     (n : ℕ) (hn : 1 ≤ n) :
     su a b ε (1 / 2) m (2 * n) - 2 * su a b ε (1 / 2) m (2 * n - 2) = 0 ∨
       su a b ε (1 / 2) m (2 * n) - 2 * su a b ε (1 / 2) m (2 * n - 2) = 1 := by
-  haveI : NeZero (2 : ℕ) := ⟨by norm_num⟩
+  have : NeZero (2 : ℕ) := ⟨by norm_num⟩
   rw [st06_thm34_digits_eps t ht0 ht1 ht2 m l k hm hl1 hlm hk a b ha hb ε hεlo hεhi n hn,
     realDigits_eq_digitStep 2 (t * (2 : ℝ) ^ (n - 1) / 2) (by positivity) 0]
   simp only [pow_zero, mul_one]

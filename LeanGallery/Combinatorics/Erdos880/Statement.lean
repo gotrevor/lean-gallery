@@ -216,6 +216,6 @@ theorem erdos_880_thm4_delta_transition (h : ℕ) (hh : 3 ≤ h) :
         (constA_infinite h hh))
       (constA_unboundedGaps_L h hh),
     lt_of_le_of_lt (Delta_le_one_of_cofinite (constA_isRestrictedBasis h hh))
-      (by exact_mod_cast ENat.coe_lt_top 1)⟩
+      (by exact_mod_cast ENat.natCast_lt_top 1)⟩
 
 end LeanGallery.Combinatorics.Erdos880

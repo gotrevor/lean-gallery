@@ -83,7 +83,7 @@ exactly the `(n−2)`-th mathlib base-2 digit of `√2`: `u(2n) − 2u(2n−2) =
 theorem gp_sqrt2_digits_via_general_literal (n : ℕ) (hn : 2 ≤ n) :
     (LeanGallery.NumberTheory.Erdos482.u (2 * n) : ℤ) - 2 * (LeanGallery.NumberTheory.Erdos482.u (2 * n - 2) : ℤ)
       = ((Real.digits (Real.sqrt 2) 2 (n - 2) : ℕ) : ℤ) := by
-  haveI : NeZero (2 : ℕ) := ⟨by norm_num⟩
+  have : NeZero (2 : ℕ) := ⟨by norm_num⟩
   rw [gp_sqrt2_digits_via_general n (by omega)]
   exact digit_recon 2 (Real.sqrt 2) (Real.sqrt_nonneg 2) n hn
 

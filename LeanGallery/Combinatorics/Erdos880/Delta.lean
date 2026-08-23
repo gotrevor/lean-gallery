@@ -81,7 +81,7 @@ lemma Delta_lt_top_iff (X : Set ℕ) : Delta X < ⊤ ↔ ∃ d, EvGapLe X d := b
     rw [this] at hlt; exact lt_irrefl _ hlt
   · rintro ⟨d, hd⟩
     have : Delta X ≤ (d : ℕ∞) := (Delta_le_nat_iff X d).mpr hd
-    exact lt_of_le_of_lt this (by exact_mod_cast ENat.coe_lt_top d)
+    exact lt_of_le_of_lt this (by exact_mod_cast ENat.natCast_lt_top d)
 
 /-- `Δ(X) = ⊤` (unbounded gaps) iff no finite `d` eventually bounds the gaps. -/
 lemma Delta_eq_top_iff (X : Set ℕ) : Delta X = ⊤ ↔ ¬ ∃ d, EvGapLe X d := by

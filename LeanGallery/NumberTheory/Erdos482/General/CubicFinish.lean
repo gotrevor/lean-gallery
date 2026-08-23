@@ -35,13 +35,13 @@ def torusRep (x : AddCircle (1:ℝ)) : ℝ := (AddCircle.equivIco (1:ℝ) 0 x : 
 
 /-- `torusRep (↑t) = {t}`.  The representative of a coerced real is its fractional part. -/
 @[simp] theorem torusRep_coe (t : ℝ) : torusRep ((t : AddCircle (1:ℝ))) = Int.fract t := by
-  haveI : Fact (0 < (1:ℝ)) := ⟨one_pos⟩
+  have : Fact (0 < (1:ℝ)) := ⟨one_pos⟩
   simp only [torusRep, AddCircle.coe_equivIco_mk_apply]
   simp
 
 /-- `torusRep` is continuous at every nonzero torus point (the chart is continuous off the cut `0`). -/
 theorem continuousAt_torusRep {x : AddCircle (1:ℝ)} (hx : x ≠ 0) : ContinuousAt torusRep x := by
-  haveI : Fact (0 < (1:ℝ)) := ⟨one_pos⟩
+  have : Fact (0 < (1:ℝ)) := ⟨one_pos⟩
   exact ContinuousAt.comp (g := fun y : Set.Ico (0:ℝ) (0+1) => (y : ℝ))
     (f := fun y => AddCircle.equivIco (1:ℝ) 0 y)
     continuousAt_subtype_val (AddCircle.continuousAt_equivIco (1:ℝ) 0 hx)
@@ -274,7 +274,7 @@ theorem ae_no_cubic_schedule_reads_base_two :
     ∀ᵐ W ∂(volume : Measure ℝ), ∀ c0 c1 c2 : ℝ, ∃ n : ℕ,
       ¬ (cubicV3 cbrt2 c0 c1 c2 ⌊W * 2 ^ n⌋ - 2 * ⌊W * 2 ^ n⌋ = 0
           ∨ cubicV3 cbrt2 c0 c1 c2 ⌊W * 2 ^ n⌋ - 2 * ⌊W * 2 ^ n⌋ = 1) := by
-  haveI : Fact (0 < (1:ℝ)) := ⟨one_pos⟩
+  have : Fact (0 < (1:ℝ)) := ⟨one_pos⟩
   filter_upwards [ae_W_cubic_torus_orbit_dense] with W hdense
   intro c0 c1 c2
   by_contra hcon

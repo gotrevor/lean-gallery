@@ -36,7 +36,7 @@ namespace LeanGallery.NumberTheory.Erdos482.General
 This identifies the limit in Weyl's criterion: for `k ≠ 0` the Cesàro average tends to `0 = ∫ fourier k`. -/
 theorem integral_fourier_eq (k : ℤ) :
     (∫ y : AddCircle (1:ℝ), (fourier k) y ∂haarAddCircle) = if k = 0 then 1 else 0 := by
-  haveI : Fact (0 < (1:ℝ)) := ⟨one_pos⟩
+  have : Fact (0 < (1:ℝ)) := ⟨one_pos⟩
   have e : fourierCoeff (T := (1:ℝ)) (fourier k) 0
       = ∫ y : AddCircle (1:ℝ), (fourier k) y ∂haarAddCircle := by
     simp only [fourierCoeff, neg_zero, fourier_zero, one_smul]
@@ -186,7 +186,7 @@ theorem weyl_criterion (x : ℕ → AddCircle (1:ℝ))
     (h : ∀ k : ℤ, k ≠ 0 →
       Tendsto (fun N : ℕ => (N:ℂ)⁻¹ * ∑ n ∈ range N, (fourier k) (x n)) atTop (𝓝 0)) :
     IsEquidistributed x := by
-  haveI : Fact (0 < (1:ℝ)) := ⟨one_pos⟩
+  have : Fact (0 < (1:ℝ)) := ⟨one_pos⟩
   -- integrability of any continuous test function (compact domain, finite measure)
   have hInt : ∀ f : C(AddCircle (1:ℝ), ℂ), Integrable (fun y => f y) haarAddCircle := fun f =>
     f.continuous.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
