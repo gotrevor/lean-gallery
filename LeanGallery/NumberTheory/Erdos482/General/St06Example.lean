@@ -176,7 +176,7 @@ theorem st06_example11_ternary_e (n : ℕ) (hn : 1 ≤ n) :
     su (-3 / (Real.exp 1 + 9)) (-(Real.exp 1 + 9)) Real.pi 1 3 (2 * n)
         - 3 * su (-3 / (Real.exp 1 + 9)) (-(Real.exp 1 + 9)) Real.pi 1 3 (2 * n - 2)
       = ((Real.digits (Real.exp 1 * (3 : ℝ) ^ (n - 1) / 3) 3 0 : ℕ) : ℤ) := by
-  haveI : NeZero (3 : ℕ) := ⟨by norm_num⟩
+  have : NeZero (3 : ℕ) := ⟨by norm_num⟩
   have hcl : ∀ k, su (-3 / (Real.exp 1 + 9)) (-(Real.exp 1 + 9)) Real.pi 1 3 (2 * k)
       = (3 : ℤ) * (3 : ℤ) ^ k + ⌊Real.exp 1 * (3 : ℝ) ^ k / 3⌋ := by
     intro k; rw [ex11_closed.1 k, pow_succ]; ring
@@ -188,7 +188,7 @@ theorem st06_example11_ternary_e_literal (n : ℕ) (hn : 2 ≤ n) :
     su (-3 / (Real.exp 1 + 9)) (-(Real.exp 1 + 9)) Real.pi 1 3 (2 * n)
         - 3 * su (-3 / (Real.exp 1 + 9)) (-(Real.exp 1 + 9)) Real.pi 1 3 (2 * n - 2)
       = ((Real.digits (Real.exp 1) 3 (n - 2) : ℕ) : ℤ) := by
-  haveI : NeZero (3 : ℕ) := ⟨by norm_num⟩
+  have : NeZero (3 : ℕ) := ⟨by norm_num⟩
   rw [st06_example11_ternary_e n (by omega)]
   exact digit_recon 3 (Real.exp 1) (le_of_lt (Real.exp_pos 1)) n hn
 

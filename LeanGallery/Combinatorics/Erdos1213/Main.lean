@@ -40,7 +40,7 @@ theorem smallBlocks_card_le (a : ℕ → ℕ) (s D : ℕ) (ha1 : 1 ≤ a 1)
     omega
   have hinj : Set.InjOn (fun p : ℕ × ℕ => csum a p.1 p.2) (smallBlocks a s D) := by
     intro p hp q hq hpq
-    simp only [smallBlocks, Finset.coe_filter, Set.mem_setOf_eq, Finset.mem_product,
+    simp only [smallBlocks, Finset.coe_filter, Set.mem_ofPred_eq, Finset.mem_product,
       Finset.mem_Icc] at hp hq
     obtain ⟨⟨⟨hu1, _⟩, _, hvs⟩, huv, _⟩ := hp
     obtain ⟨⟨⟨hu1', _⟩, _, hvs'⟩, huv', _⟩ := hq

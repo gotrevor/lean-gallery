@@ -134,10 +134,10 @@ piece 3 of the cubic frontier: the a.e.-`W` `T³` equidistribution yields a dens
 the measure-zero two-plane defect confinement. -/
 theorem isEquidistributedTorus_dense {d : Type*} [Fintype d] {x : ℕ → (d → AddCircle (1:ℝ))}
     (hx : IsEquidistributedTorus x) : Dense (Set.range x) := by
-  haveI : Fact (0 < (1:ℝ)) := ⟨one_pos⟩
-  haveI : IsProbabilityMeasure (volume : Measure (AddCircle (1:ℝ))) := by
+  have : Fact (0 < (1:ℝ)) := ⟨one_pos⟩
+  have : IsProbabilityMeasure (volume : Measure (AddCircle (1:ℝ))) := by
     rw [AddCircle.volume_eq_smul_haarAddCircle]; simp; infer_instance
-  haveI : IsProbabilityMeasure (volume : Measure (d → AddCircle (1:ℝ))) := by
+  have : IsProbabilityMeasure (volume : Measure (d → AddCircle (1:ℝ))) := by
     rw [volume_pi]; infer_instance
   exact isEquidistributed_dense volume hx
 

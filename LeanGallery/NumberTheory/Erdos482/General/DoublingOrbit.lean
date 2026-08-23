@@ -109,7 +109,7 @@ mean square `WeylDoubling.doubling_weyl_L2_mean`, not just this.) -/
 theorem ae_fract_dense_real :
     ∀ᵐ t : ℝ ∂volume,
       Dense (Set.range (fun n : ℕ => ((2 ^ n * t : ℝ) : AddCircle (1:ℝ)))) := by
-  haveI : Fact (0 < (1:ℝ)) := ⟨one_pos⟩
+  have : Fact (0 < (1:ℝ)) := ⟨one_pos⟩
   set Nbad : Set (AddCircle (1:ℝ)) :=
     {x | ¬ Dense (Set.range (fun n : ℕ => (fun y : AddCircle (1:ℝ) => (2:ℕ) • y)^[n] x))} with hN
   have hNnull : volume Nbad = 0 := ae_iff.mp ae_dense_orbit_doubling
@@ -121,7 +121,7 @@ theorem ae_fract_dense_real :
   have hpre :
       {t : ℝ | ¬ Dense (Set.range (fun n : ℕ => ((2 ^ n * t : ℝ) : AddCircle (1:ℝ))))}
         = ((↑) : ℝ → AddCircle (1:ℝ)) ⁻¹' Nbad := by
-    ext t; simp only [Set.mem_setOf_eq, Set.mem_preimage, hN, hrange t]
+    ext t; simp only [Set.mem_ofPred_eq, Set.mem_preimage, hN, hrange t]
   rw [hpre]
   have cover : ((↑) : ℝ → AddCircle (1:ℝ)) ⁻¹' Nbad
       ⊆ ⋃ k : ℤ, (((↑) : ℝ → AddCircle (1:ℝ)) ⁻¹' Nbad ∩ Set.Ioc (k:ℝ) ((k:ℝ) + 1)) := by
