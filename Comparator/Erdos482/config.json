@@ -2,6 +2,7 @@
   "challenge_module": "Comparator.Erdos482.Challenge",
   "solution_module": "Comparator.Erdos482.Solution",
   "theorem_names": [
+    "Erdos482.erdos_482_verbatim",
     "Erdos482.graham_pollak",
     "Erdos482.graham_pollak_digits",
     "Erdos482.cor33_unconditional",
