@@ -9,6 +9,7 @@ import LeanGallery.NumberTheory.Erdos482.Induction
 import LeanGallery.NumberTheory.Erdos482.Digits
 import LeanGallery.NumberTheory.Erdos482.Stoll
 import LeanGallery.NumberTheory.Erdos482.Main
+import LeanGallery.NumberTheory.Erdos482.Verbatim
 import LeanGallery.NumberTheory.Erdos482.General.Digits
 import LeanGallery.NumberTheory.Erdos482.General.Thm13
 import LeanGallery.NumberTheory.Erdos482.General.Thm13Closed
