@@ -104,6 +104,10 @@ still matches the single-line expected triple.
 #guard_msgs (whitespace := lax) in
 #print axioms LeanGallery.Combinatorics.Erdos880.erdos_880_order_two
 
+/-- info: 'LeanGallery.NumberTheory.Erdos482.erdos_482_verbatim' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms LeanGallery.NumberTheory.Erdos482.erdos_482_verbatim
+
 /-- info: 'LeanGallery.NumberTheory.Erdos482.graham_pollak' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms LeanGallery.NumberTheory.Erdos482.graham_pollak

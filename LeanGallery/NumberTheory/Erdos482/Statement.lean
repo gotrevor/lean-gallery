@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Trevor Morris
 -/
 import LeanGallery.NumberTheory.Erdos482.Main
+import LeanGallery.NumberTheory.Erdos482.Verbatim
 import LeanGallery.NumberTheory.Erdos482.Stoll
 import LeanGallery.NumberTheory.Erdos482.General.Erdos482General
 import LeanGallery.NumberTheory.Erdos482.General.St06Example
@@ -36,6 +37,13 @@ Hover any `statement_*` name to read its full Lean proposition.
 namespace LeanGallery.NumberTheory.Erdos482.Statement
 
 /-! ## I. The headline — Graham–Pollak / Erdős #482 (digits of √2) -/
+
+/-- **Erdős #482 as stated on erdosproblems.com.**  With the website's 1-indexed `a` (`a 1 = 1`,
+`a (n+1) = ⌊√2·(a n + ½)⌋`), the difference `a(2n+1) − 2·a(2n−1)` is the `n`-th digit of
+`√2 = 1.0110101…₂`, counting the leading `1` as digit 1: `⌊√2·2^(n−1)⌋ mod 2`.  This is the
+statement formal-conjectures links to. -/
+alias statement_erdos_482_verbatim := LeanGallery.NumberTheory.Erdos482.erdos_482_verbatim
+
 
 /-- **Erdős #482 / Graham–Pollak (the headline).** For `u 0 = 1`, `u (n+1) = ⌊√2·(u n + ½)⌋`, the
 difference `u(2n+1) − 2·u(2n−1)` equals the `n`-th binary digit of `√2` (`binDigit`, the standard
