@@ -4,6 +4,8 @@ import LeanGallery.Logic.Goodstein.Statement
 import LeanGallery.Logic.Hydra.Basic
 import LeanGallery.Logic.Hydra.Engine
 import LeanGallery.Logic.Hydra.Statement
+import LeanGallery.Logic.Hydra.Ordinal
+import LeanGallery.Logic.Hydra.Canonical
 import LeanGallery.NumberTheory.Erdos403.Basic
 import LeanGallery.NumberTheory.Erdos403.Engine
 import LeanGallery.NumberTheory.Erdos403.Statement
