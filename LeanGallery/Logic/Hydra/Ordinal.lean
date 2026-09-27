@@ -5,6 +5,7 @@ Authors: Trevor Morris
 -/
 import LeanGallery.Logic.Hydra.Basic
 import Mathlib.SetTheory.Ordinal.Notation
+import Mathlib.Tactic.Order
 
 /-!
 # The Kirby–Paris ordinal of a hydra, as a Cantor normal form
@@ -217,5 +218,119 @@ theorem fundamentalSequence_insertTerm_succ {e e' : ONote} [he : e.NF]
       rw [iterate_insertTerm_oadd he'e, iterate_insertTerm_zero]
       congr 1
       exact PNat.eq (by simp [hk])
+
+theorem cmp_eq_gt {x y : ONote} [x.NF] [y.NF] (h : y < x) : ONote.cmp x y = .gt := by
+  have hc := ONote.cmp_compares x y
+  cases hxy : ONote.cmp x y with
+  | lt => rw [hxy] at hc; exact (lt_asymm h hc).elim
+  | eq => rw [hxy] at hc; subst hc; exact (lt_irrefl _ h).elim
+  | gt => rfl
+
+/-- Trichotomy for normal forms, as the three `cmp` outcomes. -/
+theorem trich (x y : ONote) [x.NF] [y.NF] : x < y ∨ x = y ∨ y < x := by
+  rcases lt_trichotomy (ONote.repr x) (ONote.repr y) with h | h | h
+  · exact Or.inl (lt_def.mpr h)
+  · exact Or.inr (Or.inl (repr_inj.mp h))
+  · exact Or.inr (Or.inr (lt_def.mpr h))
+
+theorem insertTerm_comm (e f : ONote) [e.NF] [f.NF] :
+    ∀ (α : ONote) [α.NF], insertTerm e (insertTerm f α) = insertTerm f (insertTerm e α)
+  | 0, _ => by
+    rcases trich e f with h | h | h
+    · simp [insertTerm, cmp_eq_lt h, cmp_eq_gt h]
+    · subst h; rfl
+    · simp [insertTerm, cmp_eq_lt h, cmp_eq_gt h]
+  | oadd a n b, hα => by
+    have ha : a.NF := hα.fst
+    have hb : b.NF := hα.snd
+    have ih := insertTerm_comm e f b
+    rcases trich e a with h1 | h1 | h1 <;> rcases trich f a with h2 | h2 | h2 <;>
+      rcases trich e f with h3 | h3 | h3
+    all_goals first
+      | (exfalso; subst_vars; simp only [lt_def] at *; order)
+      | skip
+    all_goals subst_vars
+    all_goals simp only [insertTerm, cmp_eq_lt, cmp_eq_gt, cmp_self, *]
+
+/-- Natural sum of `ω^e` over a list of exponents. -/
+def sumTerms (l : List ONote) : ONote := l.foldr insertTerm 0
+
+theorem sumTerms_NF : ∀ (l : List ONote), (∀ x ∈ l, x.NF) → (sumTerms l).NF
+  | [], _ => NF.zero
+  | x :: l, h => by
+    have : x.NF := h x (by simp)
+    have : (sumTerms l).NF := sumTerms_NF l fun y hy => h y (by simp [hy])
+    exact insertTerm_NF x (sumTerms l)
+
+/-- The natural sum is independent of the order of the terms. -/
+theorem sumTerms_perm {l₁ l₂ : List ONote} (hp : l₁.Perm l₂) (hNF : ∀ x ∈ l₁, x.NF) :
+    sumTerms l₁ = sumTerms l₂ := by
+  induction hp with
+  | nil => rfl
+  | cons x _ ih =>
+    simp only [sumTerms, List.foldr_cons] at ih ⊢
+    rw [ih fun y hy => hNF y (by simp [hy])]
+  | swap x y l =>
+    simp only [sumTerms, List.foldr_cons]
+    have : x.NF := hNF x (by simp)
+    have : y.NF := hNF y (by simp)
+    have : (l.foldr insertTerm 0).NF := sumTerms_NF l fun z hz => hNF z (by simp [hz])
+    exact insertTerm_comm y x _
+  | trans h₁₂ _ ih₁ ih₂ =>
+    rw [ih₁ hNF, ih₂ fun y hy => hNF y (h₁₂.symm.subset hy)]
+
+/-- **The Kirby–Paris ordinal of a hydra**: `ord (node cs) = ♯_{c ∈ cs} ω^{ord c}`. -/
+def ord : Hydra → ONote
+  | node cs => sumTerms (cs.attach.map fun ⟨c, _⟩ => ord c)
+
+theorem ord_node (cs : List Hydra) : ord (node cs) = sumTerms (cs.map ord) := by
+  rw [ord]
+  congr 1
+  simp
+
+@[simp] theorem ord_leaf : ord (node []) = 0 := by
+  rw [ord_node]; rfl
+
+theorem ord_NF : ∀ h : Hydra, (ord h).NF
+  | node cs => by
+    rw [ord_node]
+    exact sumTerms_NF _ fun x hx => by
+      obtain ⟨c, hc, rfl⟩ := List.mem_map.mp hx
+      exact ord_NF c
+
+theorem ord_perm {cs ds : List Hydra} (h : cs.Perm ds) : ord (node cs) = ord (node ds) := by
+  rw [ord_node, ord_node]
+  exact sumTerms_perm (h.map ord) fun x hx => by
+    obtain ⟨c, _, rfl⟩ := List.mem_map.mp hx
+    exact ord_NF c
+
+theorem allGE_insertTerm {e f : ONote} [f.NF] (hef : e ≤ f) :
+    ∀ (α : ONote) [α.NF], AllGE e α → AllGE e (insertTerm f α)
+  | 0, _, _ => ⟨hef, trivial⟩
+  | oadd a n b, hα, hall => by
+    have ha : a.NF := hα.fst
+    have hb : b.NF := hα.snd
+    rcases trich f a with h | h | h
+    · simp only [insertTerm, cmp_eq_lt h]
+      exact ⟨hall.1, allGE_insertTerm hef b hall.2⟩
+    · subst h; simp only [insertTerm, cmp_self]; exact hall
+    · simp only [insertTerm, cmp_eq_gt h]; exact ⟨hef, hall⟩
+
+theorem allGE_sumTerms {e : ONote} :
+    ∀ (l : List ONote), (∀ x ∈ l, x.NF ∧ e ≤ x) → AllGE e (sumTerms l)
+  | [], _ => trivial
+  | x :: l, h => by
+    have hx := h x (by simp)
+    have : x.NF := hx.1
+    have : (sumTerms l).NF := sumTerms_NF l fun y hy => (h y (by simp [hy])).1
+    show AllGE e (insertTerm x (sumTerms l))
+    exact allGE_insertTerm hx.2 (sumTerms l) (allGE_sumTerms l fun y hy => h y (by simp [hy]))
+
+theorem sumTerms_replicate_append (x : ONote) :
+    ∀ (k : ℕ) (l : List ONote), sumTerms (List.replicate k x ++ l) = (insertTerm x)^[k] (sumTerms l)
+  | 0, _ => rfl
+  | k + 1, l => by
+    rw [Function.iterate_succ_apply', ← sumTerms_replicate_append x k l]
+    simp [sumTerms, List.replicate_succ]
 
 end LeanGallery.Logic.Hydra

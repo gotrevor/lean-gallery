@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Trevor Morris
 -/
 import LeanGallery.Logic.Hydra.Statement
-import Mathlib.SetTheory.Ordinal.Notation
+import LeanGallery.Logic.Hydra.Ordinal
 
 /-!
 # The canonical hydra battle
@@ -12,8 +12,8 @@ import Mathlib.SetTheory.Ordinal.Notation
 A single, computable Hercules strategy for the Kirby–Paris game, for use as the object of the
 PA-independence result (`gotrevor/goodstein-independence`, `ROADMAP-EPSILON0.md` stage 2).
 
-* `ord` — the Kirby–Paris ordinal of a hydra as a Cantor-normal-form `ONote` (natural sum
-  `♯ ω^{ord c}` over the children).
+* `ord` (`Ordinal.lean`) — the Kirby–Paris ordinal of a hydra as a Cantor-normal-form `ONote`
+  (natural sum `♯ ω^{ord c}` over the children).
 * `canonStep n` — the move at turn `n`: descend along the **first child of minimal ordinal** until
   a head is reached, and chop it.  Order-independent up to ties (tied children have equal
   ordinals), so the battle follows the fundamental sequence of `ord` rather than the incidental
@@ -28,13 +28,6 @@ Main results: `canonStep_legal` (every nonterminal canonical move is a legal `St
 
 namespace LeanGallery.Logic.Hydra
 open Hydra
-
-/-- The Kirby–Paris ordinal of a hydra, in Cantor normal form: the natural sum `♯ ω^{ord c}`
-over the children (exponents sorted descending, then added). -/
-def ord : Hydra → ONote
-  | node cs =>
-    ((cs.attach.map fun ⟨c, _⟩ => ord c).mergeSort (fun a b => ONote.cmp a b != .lt)).foldr
-      (fun e acc => ONote.add (ONote.oadd e 1 0) acc) 0
 
 /-- Index of the canonical child: the FIRST child of minimal ordinal. -/
 def pickIdx : List Hydra → ℕ
@@ -140,6 +133,129 @@ theorem canonStep_legal (n : ℕ) (h : Hydra) (hh : h ≠ leaf) : Step n h (cano
     rw [hc] at hc'; cases hc'
     have hes : es ≠ [] := by rintro rfl; exact ‹node [] = node [] → False› rfl
     exact Step.chop (chopC_legal n cs es hc hes)
+
+/-! ### P1: a canonical move is one fundamental-sequence step of `ord` -/
+
+/-- The canonical child has minimal ordinal. -/
+theorem pickIdx_min : ∀ {l : List Hydra} {c : Hydra}, l[pickIdx l]? = some c → ∀ x ∈ l, ord c ≤ ord x
+  | [], _, h, _, _ => by simp at h
+  | [y], c, h, x, hx => by
+    simp [pickIdx] at h; subst h
+    simp at hx; subst hx; exact le_rfl
+  | y :: z :: rest, c, h, x, hx => by
+    obtain ⟨e, he⟩ := pick_some (l := z :: rest) (by simp)
+    have ih := pickIdx_min he
+    have hy : (ord y).NF := ord_NF y
+    have hoe : (ord e).NF := ord_NF e
+    simp only [pickIdx, he] at h
+    split at h
+    · rename_i hlt
+      have hlt' : ord e < ord y := by
+        have hc := ONote.cmp_compares (ord e) (ord y)
+        simp only [beq_iff_eq] at hlt
+        rw [hlt] at hc; exact hc
+      have hce : c = e := by
+        have : (z :: rest)[pickIdx (z :: rest)]? = some c := by simpa using h
+        rw [he] at this; exact (Option.some.inj this).symm
+      subst hce
+      rcases List.mem_cons.mp hx with rfl | hx'
+      · exact le_of_lt hlt'
+      · exact ih x hx'
+    · rename_i hnlt
+      have hcy : c = y := by simpa using h.symm
+      subst hcy
+      have hle : ord c ≤ ord e := by
+        rcases trich (ord e) (ord c) with h' | h' | h'
+        · exact absurd (by simp [cmp_eq_lt h']) hnlt
+        · rw [h']
+        · exact le_of_lt h'
+      rcases List.mem_cons.mp hx with rfl | hx'
+      · exact le_rfl
+      · exact le_trans hle (ih x hx')
+
+/-- Splitting off the canonical child: `ord (node cs) = ord rest ♯ ω^{ord c}`, and `ord c` is at
+most every exponent of `ord rest`. -/
+theorem ord_decomp {cs : List Hydra} {c : Hydra} (hc : cs[pickIdx cs]? = some c) :
+    ord (node cs) = insertTerm (ord c) (ord (node (cs.eraseIdx (pickIdx cs)))) ∧
+      AllGE (ord c) (ord (node (cs.eraseIdx (pickIdx cs)))) := by
+  refine ⟨?_, ?_⟩
+  · rw [ord_perm (perm_pick hc), ord_node, ord_node]
+    rfl
+  · rw [ord_node]
+    refine allGE_sumTerms _ fun x hx => ?_
+    obtain ⟨d, hd, rfl⟩ := List.mem_map.mp hx
+    exact ⟨ord_NF d, pickIdx_min hc d (List.mem_of_mem_eraseIdx hd)⟩
+
+/-- **P1 at a local root**: when the canonical child is not a head, `ord` is a limit and the
+regrowing chop at turn `n` lands exactly on its `n`-th fundamental-sequence element. -/
+theorem ord_chopC (n : ℕ) : ∀ (ds es : List Hydra),
+    ds[pickIdx ds]? = some (node es) → es ≠ [] →
+      ∃ f, ONote.fundamentalSequence (ord (node ds)) = Sum.inr f ∧ ord (chopC n (node ds)) = f n
+  | ds, es, hd, hes => by
+    have hm : node es ∈ ds := List.mem_of_getElem? hd
+    have hsz := List.sizeOf_lt_of_mem hm
+    simp only [Hydra.node.sizeOf_spec] at hsz
+    obtain ⟨hdec, hall⟩ := ord_decomp hd
+    have hcNF : (ord (node es)).NF := ord_NF _
+    have hrNF : (ord (node (ds.eraseIdx (pickIdx ds)))).NF := ord_NF _
+    rw [chopC.eq_1]
+    split
+    · simp_all
+    · rename_i es' hd'
+      rw [hd] at hd'; cases hd'
+      split
+      · rename_i hnone
+        have := pickIdx_lt hes
+        simp at hnone
+        omega
+      · -- grand: the canonical grandchild is a head; `ord (node es)` is a successor
+        rename_i he'
+        obtain ⟨hdec', _⟩ := ord_decomp he'
+        have hs : ONote.fundamentalSequence (ord (node es)) =
+            Sum.inl (some (ord (node (es.eraseIdx (pickIdx es))))) := by
+          rw [hdec', ord_leaf]
+          have : (ord (node (es.eraseIdx (pickIdx es)))).NF := ord_NF _
+          exact fundamentalSequence_insertTerm_zero _
+        refine ⟨_, by rw [hdec]; exact fundamentalSequence_insertTerm_succ hs _ hall, ?_⟩
+        rw [ord_perm List.perm_append_comm, ord_node, List.map_append, List.map_replicate,
+          sumTerms_replicate_append, ← ord_node]
+      · -- deep: recurse into the canonical child
+        rename_i g _ _
+        obtain ⟨gs⟩ := g
+        have hgs : gs ≠ [] := by rintro rfl; exact ‹node [] = node [] → False› rfl
+        have : sizeOf es < sizeOf ds := by omega
+        obtain ⟨f, hf, hfn⟩ := ord_chopC n es gs ‹es[pickIdx es]? = some (node gs)› hgs
+        refine ⟨_, by rw [hdec]; exact fundamentalSequence_insertTerm_limit hf _ hall, ?_⟩
+        show ord (node (chopC n (node es) :: ds.eraseIdx (pickIdx ds))) = _
+        rw [ord_node, List.map_cons, hfn, ord_node]
+        rfl
+termination_by ds => sizeOf ds
+
+/-- **P1**: a canonical move on a live hydra is one step of the fundamental sequence of its
+ordinal — the predecessor when `ord h` is a successor, the `n`-th element when it is a limit. -/
+theorem ord_canonStep (n : ℕ) (h : Hydra) (hh : h ≠ leaf) :
+    ONote.fundamentalSequence (ord h) = Sum.inl (some (ord (canonStep n h))) ∨
+      ∃ f, ONote.fundamentalSequence (ord h) = Sum.inr f ∧ ord (canonStep n h) = f n := by
+  obtain ⟨cs⟩ := h
+  have hcs : cs ≠ [] := by rintro rfl; exact hh rfl
+  obtain ⟨c, hc⟩ := pick_some hcs
+  obtain ⟨es⟩ := c
+  obtain ⟨hdec, hall⟩ := ord_decomp hc
+  have : (ord (node (cs.eraseIdx (pickIdx cs)))).NF := ord_NF _
+  rw [canonStep.eq_1]
+  split
+  · simp_all
+  · rename_i hc'
+    rw [hc] at hc'; cases hc'
+    left
+    rw [hdec, ord_leaf]
+    exact fundamentalSequence_insertTerm_zero (ord (node (cs.eraseIdx (pickIdx cs))))
+  · rename_i g _ _
+    have hc' : cs[pickIdx cs]? = some g := ‹_›
+    rw [hc] at hc'; cases hc'
+    have hes : es ≠ [] := by rintro rfl; exact ‹node [] = node [] → False› rfl
+    right
+    exact ord_chopC n cs es hc hes
 
 /-- The canonical battle terminates (the positive theorem PA will be shown unable to prove). -/
 theorem battle_terminates (h : Hydra) : ∃ N, battle h N = leaf :=
