@@ -82,3 +82,23 @@ theorem erdos_482_verbatim (n : ℕ) (hn : 1 ≤ n) :
     rw [e2] at key
     rw [← key, hA, show 2 * (k + 1) = 2 * k + 2 by ring, hB]
     ring
+
+/-- **Erdős #482, verbatim, in Mathlib's digits.**  The `n`-th binary digit of `√2`, counting the
+leading `1` as digit 1, is digit `n − 1` of `√2 / 2 = 0.10110101…₂` in `Real.digits`; and those
+digits are the binary expansion, since they reconstruct `√2 / 2`. -/
+theorem erdos_482_verbatim_digits :
+    (∀ n : ℕ, 1 ≤ n →
+      (a (2 * n + 1) : ℤ) - 2 * (a (2 * n - 1) : ℤ)
+        = ((Real.digits (Real.sqrt 2 / 2) 2 (n - 1) : ℕ) : ℤ)) ∧
+      Real.ofDigits (Real.digits (Real.sqrt 2 / 2) 2) = Real.sqrt 2 / 2 := by
+  refine ⟨fun n hn => ?_, ?_⟩
+  · rw [erdos_482_verbatim n hn]
+    obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, by omega⟩
+    simp only [Real.digits, Fin.val_ofNat, Nat.add_sub_cancel]
+    congr 3
+    push_cast
+    rw [pow_succ]
+    ring
+  · refine Real.ofDigits_digits (by norm_num) ⟨by positivity, ?_⟩
+    rw [div_lt_one (by norm_num), Real.sqrt_lt' (by norm_num)]
+    norm_num
