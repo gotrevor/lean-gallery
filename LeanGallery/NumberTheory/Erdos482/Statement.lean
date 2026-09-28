@@ -40,9 +40,13 @@ namespace LeanGallery.NumberTheory.Erdos482.Statement
 
 /-- **Erdős #482 as stated on erdosproblems.com.**  With the website's 1-indexed `a` (`a 1 = 1`,
 `a (n+1) = ⌊√2·(a n + ½)⌋`), the difference `a(2n+1) − 2·a(2n−1)` is the `n`-th digit of
-`√2 = 1.0110101…₂`, counting the leading `1` as digit 1: `⌊√2·2^(n−1)⌋ mod 2`.  This is the
-statement formal-conjectures links to. -/
+`√2 = 1.0110101…₂`, counting the leading `1` as digit 1: `⌊√2·2^(n−1)⌋ mod 2`. -/
 alias statement_erdos_482_verbatim := LeanGallery.NumberTheory.Erdos482.erdos_482_verbatim
+
+/-- **Erdős #482 as stated on erdosproblems.com, in Mathlib's `Real.digits`.**  The same difference is
+digit `n − 1` of `√2 / 2 = 0.10110101…₂`, and those digits reconstruct `√2 / 2`.  This is the statement
+formal-conjectures links to. -/
+alias statement_erdos_482_verbatim_digits := LeanGallery.NumberTheory.Erdos482.erdos_482_verbatim_digits
 
 
 /-- **Erdős #482 / Graham–Pollak (the headline).** For `u 0 = 1`, `u (n+1) = ⌊√2·(u n + ½)⌋`, the
