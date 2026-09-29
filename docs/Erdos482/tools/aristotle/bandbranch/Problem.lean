@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 Trevor Morris. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Trevor Morris
+-/
 import Mathlib
 
 /- Inlined from our repo (kernel-verified there): the binary-shift map on Int.fract. -/
