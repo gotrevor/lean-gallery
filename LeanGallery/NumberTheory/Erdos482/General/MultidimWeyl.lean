@@ -30,7 +30,7 @@ namespace LeanGallery.NumberTheory.Erdos482.General
 otherwise.  By Fubini `∫_{Tᵈ} ∏ᵢ fourier(nᵢ) = ∏ᵢ ∫ fourier(nᵢ) = ∏ᵢ δ_{nᵢ,0} = δ_{n,0}`. -/
 theorem integral_mFourier_eq {d : Type*} [Fintype d] (n : d → ℤ) :
     (∫ x : (d → AddCircle (1:ℝ)), mFourier n x ∂volume) = if n = 0 then 1 else 0 := by
-  haveI : Fact (0 < (1:ℝ)) := ⟨one_pos⟩
+  have : Fact (0 < (1:ℝ)) := ⟨one_pos⟩
   have hvh : (volume : Measure (AddCircle (1:ℝ))) = haarAddCircle := by
     rw [AddCircle.volume_eq_smul_haarAddCircle]; simp
   have hfac : ∀ k : ℤ, (∫ y : AddCircle (1:ℝ), fourier k y ∂volume) = if k = 0 then 1 else 0 := by
@@ -62,11 +62,11 @@ theorem weyl_criterion_torus {d : Type*} [Fintype d] (x : ℕ → (d → AddCirc
     (h : ∀ k : d → ℤ, k ≠ 0 →
       Tendsto (fun N : ℕ => (N:ℂ)⁻¹ * ∑ n ∈ range N, (mFourier k) (x n)) atTop (𝓝 0)) :
     IsEquidistributedTorus x := by
-  haveI : Fact (0 < (1:ℝ)) := ⟨one_pos⟩
+  have : Fact (0 < (1:ℝ)) := ⟨one_pos⟩
   have hvh : (volume : Measure (AddCircle (1:ℝ))) = haarAddCircle := by
     rw [AddCircle.volume_eq_smul_haarAddCircle]; simp
-  haveI : IsProbabilityMeasure (volume : Measure (AddCircle (1:ℝ))) := by rw [hvh]; infer_instance
-  haveI : IsProbabilityMeasure (volume : Measure (d → AddCircle (1:ℝ))) := by
+  have : IsProbabilityMeasure (volume : Measure (AddCircle (1:ℝ))) := by rw [hvh]; infer_instance
+  have : IsProbabilityMeasure (volume : Measure (d → AddCircle (1:ℝ))) := by
     rw [volume_pi]; infer_instance
   have hInt : ∀ f : C(d → AddCircle (1:ℝ), ℂ), Integrable (fun y => f y) volume := fun f =>
     f.continuous.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)

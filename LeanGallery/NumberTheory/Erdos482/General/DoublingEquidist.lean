@@ -133,7 +133,7 @@ theorem ae_of_ae_restrict_Icc01_of_periodic {P : ℝ → Prop}
     have hset : ({s : ℝ | ¬ P s} ∩ Set.Icc (k:ℝ) ((k:ℝ) + 1))
         = (fun x => x + (-(k:ℝ))) ⁻¹' ({s : ℝ | ¬ P s} ∩ Set.Icc (0:ℝ) 1) := by
       ext x
-      simp only [Set.mem_inter_iff, Set.mem_preimage, Set.mem_setOf_eq, Set.mem_Icc]
+      simp only [Set.mem_inter_iff, Set.mem_preimage, Set.mem_ofPred_eq, Set.mem_Icc]
       constructor
       · rintro ⟨hx, hl, hr⟩
         refine ⟨?_, by linarith, by linarith⟩

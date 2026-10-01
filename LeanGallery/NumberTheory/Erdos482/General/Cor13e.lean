@@ -39,7 +39,7 @@ theorem cor13_ternary_exp_one (n : ℕ) (hn : 1 ≤ n) :
     gu 3 (3 / (2 * (Real.exp 1 + 3))) (6 + 2 * Real.exp 1) 0 (2 * n)
         - 3 * gu 3 (3 / (2 * (Real.exp 1 + 3))) (6 + 2 * Real.exp 1) 0 (2 * n - 2)
       = ((Real.digits (Real.exp 1 * (3 : ℝ) ^ (n - 1) / 3) 3 0 : ℕ) : ℤ) := by
-  haveI : NeZero (3 : ℕ) := ⟨by norm_num⟩
+  have : NeZero (3 : ℕ) := ⟨by norm_num⟩
   have hpos : (0 : ℝ) < Real.exp 1 + 3 := by have := exp_one_ge_one; linarith
   -- a = 3/((3−1)(e+3))
   have ha : (3 : ℝ) / (2 * (Real.exp 1 + 3))
@@ -56,7 +56,7 @@ theorem cor13_ternary_exp_one_literal (n : ℕ) (hn : 2 ≤ n) :
     gu 3 (3 / (2 * (Real.exp 1 + 3))) (6 + 2 * Real.exp 1) 0 (2 * n)
         - 3 * gu 3 (3 / (2 * (Real.exp 1 + 3))) (6 + 2 * Real.exp 1) 0 (2 * n - 2)
       = ((Real.digits (Real.exp 1) 3 (n - 2) : ℕ) : ℤ) := by
-  haveI : NeZero (3 : ℕ) := ⟨by norm_num⟩
+  have : NeZero (3 : ℕ) := ⟨by norm_num⟩
   rw [cor13_ternary_exp_one n (by omega)]
   exact digit_recon 3 (Real.exp 1) (le_of_lt (Real.exp_pos 1)) n hn
 

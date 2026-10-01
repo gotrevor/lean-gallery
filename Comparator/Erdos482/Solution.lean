@@ -46,6 +46,12 @@ noncomputable def gu (g : ℕ) (a b ε : ℝ) : ℕ → ℤ
       if Even n then ⌊a * ((gu g a b ε n : ℝ) + ε)⌋
       else ⌊b * ((gu g a b ε n : ℝ) + 1 / ((g : ℝ) - 1))⌋
 
+/-- Verbatim from `Challenge.lean` — comparator checks the two are the same declaration. -/
+noncomputable def a : ℕ → ℕ
+  | 0     => 0
+  | 1     => 1
+  | n + 2 => ⌊Real.sqrt 2 * ((a (n + 1) : ℝ) + 1 / 2)⌋₊
+
 /-! ## Bridges to the development's copies of the same definitions -/
 
 theorem u_eq (n : ℕ) : u n = LeanGallery.NumberTheory.Erdos482.u n := by
@@ -67,7 +73,21 @@ theorem gu_eq (g : ℕ) (a b ε : ℝ) (n : ℕ) :
   | zero => rfl
   | succ n ih => simp only [gu, LeanGallery.NumberTheory.Erdos482.General.gu, ih]
 
+theorem a_eq (n : ℕ) : a n = LeanGallery.NumberTheory.Erdos482.a n := by
+  induction n using Nat.strong_induction_on with
+  | _ n ih =>
+    match n with
+    | 0 => rfl
+    | 1 => rfl
+    | n + 2 => simp only [a, LeanGallery.NumberTheory.Erdos482.a, ih (n + 1) (by omega)]
+
 /-! ## The headline statements, delegated -/
+
+theorem erdos_482_verbatim (n : ℕ) (hn : 1 ≤ n) :
+    (a (2 * n + 1) : ℤ) - 2 * (a (2 * n - 1) : ℤ)
+      = ((⌊Real.sqrt 2 * 2 ^ (n - 1)⌋₊ % 2 : ℕ) : ℤ) := by
+  simp only [a_eq]
+  exact LeanGallery.NumberTheory.Erdos482.erdos_482_verbatim n hn
 
 theorem graham_pollak (n : ℕ) (hn : 1 ≤ n) :
     (u (2 * n + 1) : ℤ) - 2 * (u (2 * n - 1) : ℤ) = binDigit (Real.sqrt 2) n := by

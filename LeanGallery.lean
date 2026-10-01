@@ -1,9 +1,16 @@
+/-
+Copyright (c) 2026 Trevor Morris. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Trevor Morris
+-/
 import LeanGallery.Logic.Goodstein.Basic
 import LeanGallery.Logic.Goodstein.Engine
 import LeanGallery.Logic.Goodstein.Statement
 import LeanGallery.Logic.Hydra.Basic
 import LeanGallery.Logic.Hydra.Engine
 import LeanGallery.Logic.Hydra.Statement
+import LeanGallery.Logic.Hydra.Ordinal
+import LeanGallery.Logic.Hydra.Canonical
 import LeanGallery.NumberTheory.Erdos403.Basic
 import LeanGallery.NumberTheory.Erdos403.Engine
 import LeanGallery.NumberTheory.Erdos403.Statement

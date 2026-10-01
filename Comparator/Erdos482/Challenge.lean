@@ -37,6 +37,8 @@ digits of `w`.
 
 ## What is claimed here
 
+* `erdos_482_verbatim` — the problem exactly as erdosproblems.com states it, with its
+  1-indexed sequence `a`: `a(2n+1) − 2·a(2n−1)` is the `n`-th digit of `√2 = 1.0110101…₂`.
 * `graham_pollak` — the headline, in Stoll's floor-formula digit `binDigit`.
 * `graham_pollak_digits` — **the anchor**: the same difference is literally mathlib's own
   `Real.digits` base-2 digit of `Int.fract √2`. This is what stops `binDigit` from being a
@@ -50,7 +52,7 @@ digits of `w`.
   out `0,1,1,0,1,0`, matching `√2 = 1.0110101…₂`. Concrete numbers, so none of the above can be
   satisfied by a vacuous or degenerate reading of `binDigit`.
 
-All four definitions below (`u`, `binDigit`, `vv`, `gu`) are `noncomputable` for the boring reason
+All five definitions below (`u`, `binDigit`, `vv`, `gu`, `a`) are `noncomputable` for the boring reason
 that `Real.sqrt`, `Int.floor` and `Nat.floor` on `ℝ` are — nothing hides there.
 -/
 
@@ -84,7 +86,21 @@ noncomputable def gu (g : ℕ) (a b ε : ℝ) : ℕ → ℤ
       if Even n then ⌊a * ((gu g a b ε n : ℝ) + ε)⌋
       else ⌊b * ((gu g a b ε n : ℝ) + 1 / ((g : ℝ) - 1))⌋
 
+/-- The Graham–Pollak sequence in erdosproblems.com's 1-indexing: `a 1 = 1`,
+`a (n+1) = ⌊√2·(a n + 1/2)⌋` for `n ≥ 1`.  The value `a 0` is unused. -/
+noncomputable def a : ℕ → ℕ
+  | 0     => 0
+  | 1     => 1
+  | n + 2 => ⌊Real.sqrt 2 * ((a (n + 1) : ℝ) + 1 / 2)⌋₊
+
 /-! ## The headline statements -/
+
+/-- **Erdős #482 as stated on erdosproblems.com**, with its 1-indexed `a`: the difference
+`a(2n+1) − 2·a(2n−1)` is the `n`-th digit of `√2 = 1.0110101…₂`, counting the leading `1` as
+digit 1. -/
+theorem erdos_482_verbatim (n : ℕ) (hn : 1 ≤ n) :
+    (a (2 * n + 1) : ℤ) - 2 * (a (2 * n - 1) : ℤ)
+      = ((⌊Real.sqrt 2 * 2 ^ (n - 1)⌋₊ % 2 : ℕ) : ℤ) := sorry
 
 /-- **Erdős #482 / Graham–Pollak (the headline).** For `u 0 = 1`, `u (n+1) = ⌊√2·(u n + ½)⌋`, the
 difference `u(2n+1) − 2·u(2n−1)` is the `n`-th binary digit of `√2`. -/

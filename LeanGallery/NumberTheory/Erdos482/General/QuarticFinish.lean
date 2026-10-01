@@ -225,7 +225,7 @@ theorem ae_no_quartic_schedule_reads_base_two :
     ∀ᵐ W ∂(volume : Measure ℝ), ∀ c0 c1 c2 c3 : ℝ, ∃ n : ℕ,
       ¬ (quarticV4 qrt2 c0 c1 c2 c3 ⌊W * 2 ^ n⌋ - 2 * ⌊W * 2 ^ n⌋ = 0
           ∨ quarticV4 qrt2 c0 c1 c2 c3 ⌊W * 2 ^ n⌋ - 2 * ⌊W * 2 ^ n⌋ = 1) := by
-  haveI : Fact (0 < (1:ℝ)) := ⟨one_pos⟩
+  have : Fact (0 < (1:ℝ)) := ⟨one_pos⟩
   filter_upwards [ae_W_quartic_torus_orbit_dense] with W hdense
   intro c0 c1 c2 c3
   by_contra hcon
